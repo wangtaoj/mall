@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- 加载配置文件 -->
+	<bean id="propertyConfigurer"
+		  class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="order" value="2"/>
+		<property name="ignoreUnresolvablePlaceholders" value="true"/>
+		<property name="locations">
+			<list>
+				<value>classpath:datasource.properties</value>
+			</list>
+		</property>
+		<property name="fileEncoding" value="utf-8"/>
+	</bean>
+
+   <!-- 数据库连接池配置 -->
+   <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+   		<property name="driverClass" value="${db.driverClass}" />
+   		<property name="jdbcUrl" value="${db.jdbcUrl}" />
+   		<property name="user" value="${db.user}" />
+   		<property name="password" value="${db.password}" />
+   </bean>
+   
+   <!-- sqlSessionFactory配置，sqlSession工厂 
+   		class是sqlSessionFactory的一个实现类,位于mybatis-spring包下，因为sqlSessionFactory是接口不能实例化
+   -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+    	<!-- 注入连接池 -->
+    	<property name="dataSource" ref="dataSource" />
+		<!--配置entity包,在实体类对应的mapper.xml里如果涉及写实体类名时，可以只写类名，而不用包名-->
+		<property name="typeAliasesPackage" value="com.waston.entity"/>
+    	<!-- 加载mybatis主配置文件 -->
+    	<property name="configLocation" value="classpath:mybatis-config.xml"/>
+    	<!-- 加载mybatis映射文件 -->
+    	<property name="mapperLocations" value="classpath:mapper/*.xml"/>
+    </bean>
+    
+	<!-- 配置 转换器，对于在basePackage设置的包（包括子包）下的接口类，
+	如果接口类的全类名在Mapper.xml文件中的命名空间一致，
+	 将被转换成spring的BEAN，在调用 的地方通过@Autowired方式将可以注入接口实例
+	 工作原理:
+	 1.会把basePackage中的包下面的接口生成子类对象，我们只需在service中通过@Autowired
+	      把该子类对象注入到service中的dao属性
+	 2.把接口的全类名当做mapper文件的名称空间,对应的抽象方法名字当做mapper文件
+	 中增删改查语句的id
+	 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.waston.dao" />
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+	</bean>
+
+</beans>

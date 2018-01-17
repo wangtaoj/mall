@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/tx
+     	http://www.springframework.org/schema/tx/spring-tx.xsd
+     	http://www.springframework.org/schema/aop
+     	http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!-- 开启注解扫描 -->
+    <context:component-scan base-package="com.waston.service"/>
+
+    <!-- 事务管理配置 -->
+    <!-- 事务管理器,mybatis使用的是jdbc的管理器 -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    <!-- 事务管理增强 -->
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <!--propagation="REQUIRED":如果当前存在事务,那么在当前事务执行,如果没有那么开启一个新的事务环境执行 -->
+            <tx:method name="find*" propagation="REQUIRED" read-only="true" rollback-for="Exception" />
+            <tx:method name="get*" propagation="REQUIRED" read-only="true" rollback-for="Exception" />
+            <tx:method name="select*" propagation="REQUIRED" read-only="true" rollback-for="Exception" />
+
+            <tx:method name="add*" propagation="REQUIRED" rollback-for="Exception" />
+            <tx:method name="save*" propagation="REQUIRED" rollback-for="Exception" />
+            <tx:method name="create*" propagation="REQUIRED" rollback-for="Exception" />
+            <tx:method name="insert*" propagation="REQUIRED" rollback-for="Exception" />
+            <tx:method name="update*" propagation="REQUIRED" rollback-for="Exception" />
+            <tx:method name="delete*" propagation="REQUIRED" rollback-for="Exception" />
+            <tx:method name="remove*" propagation="REQUIRED" rollback-for="Exception" />
+            <!-- 其它 propagation="SUPPORTS" 如果存在一个事务支持当前事务, 否则非事务执行 -->
+            <tx:method name="*" propagation="SUPPORTS" />
+        </tx:attributes>
+    </tx:advice>
+    <!-- aop切面配置 -->
+    <aop:config>
+        <!-- 切入点表达式 -->
+        <aop:pointcut expression="execution(* com.waston.service.*.*(..))" id="pt"/>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="pt"/>
+    </aop:config>
+
+    <import resource="spring-mybatis.xml"/>
+
+</beans>
