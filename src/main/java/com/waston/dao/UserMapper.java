@@ -42,4 +42,43 @@ public interface UserMapper {
      */
     int checkEmail(String email);
 
+    /**
+     * 根据用户名获取问题信息，用来重置密码
+     * @param username
+     * @return
+     */
+    String selectQuestionByUsername(String username);
+
+    /**
+     * 检查答案是否正确
+     * @param username
+     * @param question
+     * @param answer
+     * @return
+     */
+    int checkAnswer(@Param("username")String username, @Param("question")String question, @Param("answer")String answer);
+
+    /**
+     * 修改密码
+     * @param username
+     * @param passwordNew
+     * @return
+     */
+    int updatePassword(@Param("username")String username, @Param("passwordNew") String passwordNew);
+
+    /**
+     * 校验旧密码
+     * @param passwordOld
+     * @param username
+     * @return
+     */
+    int checkPassword(@Param("username")String username, @Param("passwordOld")String passwordOld);
+
+    /**
+     * 检查邮箱是否存在(把id也就是当前用户除开)
+     * @param id
+     * @param email
+     * @return
+     */
+    int checkEmailById(@Param("id")Integer id, @Param("email")String email);
 }

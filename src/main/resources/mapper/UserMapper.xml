@@ -33,8 +33,7 @@
       update_time)
     values (#{id,jdbcType=INTEGER}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
       #{email,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{question,jdbcType=VARCHAR}, 
-      #{answer,jdbcType=VARCHAR}, #{role,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updateTime,jdbcType=TIMESTAMP})
+      #{answer,jdbcType=VARCHAR}, #{role,jdbcType=INTEGER}, now(), now())
   </insert>
   <insert id="insertSelective" parameterType="com.waston.pojo.User" >
     insert into mmall_user
@@ -163,5 +162,37 @@
     <include refid="Base_Column_List" />
     from mmall_user
     where username = #{username} AND password = #{password}
+  </select>
+
+  <select id="selectQuestionByUsername" resultType="string">
+    SELECT question
+    FROM mmall_user
+    WHERE username = #{username}
+  </select>
+
+  <select id="checkAnswer" resultType="int">
+    SELECT COUNT(*)
+    FROM mmall_user
+    WHERE username = #{username} AND question = #{question} AND answer = #{answer}
+  </select>
+
+  <update id="updatePassword">
+    UPDATE mmall_user
+    SET password = #{passwordNew}, update_time = now()
+    WHERE username = #{username}
+  </update>
+
+  <select id="checkPassword" resultType="int">
+    SELECT COUNT(*)
+    FROM mmall_user
+    WHERE username = #{username}
+    AND password = #{passwordOld}
+  </select>
+
+  <select id="checkEmailById" resultType="int">
+    SELECT COUNT(*)
+    FROM mmall_user
+    WHERE email = #{email}
+    AND id != #{id}
   </select>
 </mapper>

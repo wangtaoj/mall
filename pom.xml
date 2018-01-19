@@ -74,12 +74,6 @@
       <artifactId>jsqlparser</artifactId>
       <version>0.9.4</version>
     </dependency>
-    <!--为了在mybatis中使用jdk8的时间类-->
-    <dependency>
-      <groupId>org.mybatis</groupId>
-      <artifactId>mybatis-typehandlers-jsr310</artifactId>
-      <version>1.0.0</version>
-    </dependency>
 
     <!-- servlet相关依赖 -->
     <dependency>

@@ -7,7 +7,8 @@ package com.waston.common;
  **/
 public enum ResponseCode {
     SUCCESS(0, "success"),
-    ERROR(1, "error");
+    ERROR(1, "error"),
+    NEED_LOGIN(10, "need to login");
 
     private final int status;
 

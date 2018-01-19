@@ -48,11 +48,7 @@ public class ServerResponse<T> {
         return new ServerResponse<>(ResponseCode.SUCCESS.getStatus(),msg, data);
     }
 
-    public static <T> ServerResponse<T> createBySuccess() {
-        return new ServerResponse<>(ResponseCode.SUCCESS.getStatus());
-    }
-
-    public static <T> ServerResponse<T> createBySuccessmsg(String msg) {
+    public static <T> ServerResponse<T> createBySuccessMsg(String msg) {
         return new ServerResponse<>(ResponseCode.SUCCESS.getStatus(), msg);
     }
 
@@ -60,8 +56,8 @@ public class ServerResponse<T> {
         return new ServerResponse<>(ResponseCode.ERROR.getStatus(), msg);
     }
 
-    public static <T> ServerResponse<T> createByError() {
-        return new ServerResponse<>(ResponseCode.ERROR.getStatus());
+    public static <T> ServerResponse<T> createByError(int status, String msg) {
+        return new ServerResponse<>(status, msg);
     }
 
     @JsonIgnore //忽略该字段
