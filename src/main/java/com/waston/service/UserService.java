@@ -81,4 +81,12 @@ public interface UserService {
      * @return
      */
     ServerResponse<User> getUserInfo(Integer id);
+
+    /**
+     * 分页获取用户列表
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    ServerResponse listUsers(int pageNum, int pageSize);
 }

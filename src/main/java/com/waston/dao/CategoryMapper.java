@@ -19,6 +19,7 @@ public interface CategoryMapper {
 
     /**
      * 判断该分类是否存在
+     *
      * @param id
      * @return
      */
@@ -26,6 +27,7 @@ public interface CategoryMapper {
 
     /**
      * 获取平级的子分类
+     *
      * @param parentId
      * @return
      */

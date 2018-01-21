@@ -13,7 +13,7 @@
 		<property name="ignoreUnresolvablePlaceholders" value="true"/>
 		<property name="locations">
 			<list>
-				<value>classpath:datasource.properties</value>
+				<value>classpath:db.properties</value>
 			</list>
 		</property>
 		<property name="fileEncoding" value="utf-8"/>
@@ -39,7 +39,20 @@
     	<property name="configLocation" value="classpath:mybatis-config.xml"/>
     	<!-- 加载mybatis映射文件 -->
     	<property name="mapperLocations" value="classpath:mapper/*.xml"/>
-    </bean>
+		<!-- 分页插件 -->
+		<property name="plugins">
+			<array>
+				<bean class="com.github.pagehelper.PageHelper">
+					<property name="properties">
+						<value>
+							dialect=mysql
+						</value>
+					</property>
+				</bean>
+			</array>
+		</property>
+
+	</bean>
     
 	<!-- 配置 转换器，对于在basePackage设置的包（包括子包）下的接口类，
 	如果接口类的全类名在Mapper.xml文件中的命名空间一致，

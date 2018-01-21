@@ -1,5 +1,7 @@
 package com.waston.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.waston.common.Consts;
 import com.waston.common.ServerResponse;
 import com.waston.common.TokenCache;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -153,6 +156,14 @@ public class UserServiceImpl implements UserService{
             return ServerResponse.createByError("此用户不存在");
         }
         return ServerResponse.createBySuccess(user);
+    }
+
+    @Override
+    public ServerResponse listUsers(int pageNum, int pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<User> users = userMapper.selectByPage();
+        PageInfo pageResult = new PageInfo<>(users);
+        return ServerResponse.createBySuccess(pageResult);
     }
 
 }

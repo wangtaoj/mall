@@ -34,7 +34,7 @@ public class UserController {
      */
     @RequestMapping(value = "/login.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     @ResponseBody
-    public ServerResponse<User> login(String username, String password, HttpSession session) {
+    public ServerResponse login(String username, String password, HttpSession session) {
         ServerResponse response = userService.login(username, password);
         //登录成功, 将当前用户存入session中
         if(response.isSuccess()) {
@@ -154,7 +154,7 @@ public class UserController {
      */
     @RequestMapping(value = "/update_information.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     @ResponseBody
-    public ServerResponse<User> updateUserInfo(User user, HttpSession session) {
+    public ServerResponse updateUserInfo(User user, HttpSession session) {
         User currentUser = (User)session.getAttribute(Consts.CURRENT_USER);
         if(currentUser == null)
             return ServerResponse.createByError("还未登录");

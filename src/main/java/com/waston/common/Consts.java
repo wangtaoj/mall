@@ -1,5 +1,9 @@
 package com.waston.common;
 
+import com.google.common.collect.Sets;
+
+import java.util.Set;
+
 /**
  * @author wangtao
  * @date 2018-2018/1/12-22:05
@@ -23,5 +27,11 @@ public class Consts {
 
     //session存取当前用户的key值
     public static final String CURRENT_USER = "currentUser";
+
+    //商品在售状态
+    public static final int ON_SALE = 1;
+
+    //商品排序规则
+    public static final Set<String> ORDER_SET = Sets.newHashSet("price_asc", "price_desc");
 
 }
