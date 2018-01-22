@@ -6,7 +6,8 @@ import com.waston.utils.PropertiesUtil;
 import java.math.BigDecimal;
 
 /**
- * Created by geely
+ * @Author wangtao
+ * @Date 2018/1/21
  */
 public class ProductListVo {
 

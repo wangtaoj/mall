@@ -1,6 +1,7 @@
 package com.waston.controller.manage;
 
 import com.waston.common.Consts;
+import com.waston.common.ResponseCode;
 import com.waston.common.ServerResponse;
 import com.waston.pojo.User;
 import com.waston.service.UserService;
@@ -59,7 +60,7 @@ public class UserManageController {
                                     HttpSession session) {
         User currentUser = (User)session.getAttribute(Consts.CURRENT_USER);
         if(currentUser == null)
-            return ServerResponse.createByError("还未登录");
+            return ServerResponse.createByError(ResponseCode.NEED_LOGIN.getStatus(), "还未登录");
         if(currentUser.getRole() != Consts.ADMIN_ROLE)
             return ServerResponse.createByError("普通用户, 权限不够");
         return userService.listUsers(pageNum, pageSize);

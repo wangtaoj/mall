@@ -34,4 +34,14 @@ public class Consts {
     //商品排序规则
     public static final Set<String> ORDER_SET = Sets.newHashSet("price_asc", "price_desc");
 
+    //购物车记录选中标志
+    public static final Integer CART_CHECK = 1;
+    public static final Integer CART_UNCHECK = 0;
+
+    //购物车添加或者更新记录时是否超过商品库存的一个字段
+    public static final String CART_SUCCESS = "LIMIT_NUM_SUCCESS";
+    public static final String CART_FAIL = "LIMIT_NUM_FAIL";
+
+
+
 }

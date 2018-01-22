@@ -46,4 +46,5 @@ public interface ProductMapper {
      * @return
      */
     List<Product> selectByNameOrCategoryIds(@Param("productName")String productName, @Param("categories")List<Integer> categories);
+
 }
