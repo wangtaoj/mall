@@ -122,7 +122,7 @@ public class CartController {
     }
 
     /**
-     * 获取当前用户购物车里记录数量
+     * 获取当前用户购物车里商品数量
      * @param session
      * @return
      */
