@@ -42,6 +42,83 @@ public class Consts {
     public static final String CART_SUCCESS = "LIMIT_NUM_SUCCESS";
     public static final String CART_FAIL = "LIMIT_NUM_FAIL";
 
+    /**
+     * 交易状态, 支付宝官方提供, 回调返回结果会包含该字段, 可用来判断订单是否成功付款
+     */
+    public interface  TRADE_STATUS{
+        String WAIT_BUYER_PAY = "WAIT_BUYER_PAY"; //交易创建，等待买家付款
+        String TRADE_CLOSED = "TRADE_CLOSED"; //未付款交易超时关闭，或支付完成后全额退款
+        String TRADE_SUCCESS = "TRADE_SUCCESS"; //交易支付成功
+        String TRADE_FINISHED = "TRADE_FINISHED"; //交易结束，不可退款
+    }
+
+    /**
+     * 订单状态
+     */
+    public enum OrderStatusEnum{
+        CANCELED(0,"已取消"),
+        NO_PAY(10,"未支付"),
+        PAID(20,"已付款"),
+        SHIPPED(40,"已发货"),
+        ORDER_SUCCESS(50,"订单完成"),
+        ORDER_CLOSE(60,"订单关闭");
+
+        OrderStatusEnum(int code,String value){
+            this.code = code;
+            this.value = value;
+        }
+
+        private String value;
+        private int code;
+        public String getValue() {
+            return value;
+        }
+        public int getCode() {
+            return code;
+        }
+    }
+
+    /**
+     * 支付平台类型枚举类
+     */
+    public enum PayPlatformEnum{
+        ALIPAY(1,"支付宝");
+
+        PayPlatformEnum(int code,String value){
+            this.code = code;
+            this.value = value;
+        }
+        private String value;
+        private int code;
+
+        public String getValue() {
+            return value;
+        }
+
+        public int getCode() {
+            return code;
+        }
+    }
+
+    public enum PaymentTypeEnum{
+        ONLINE_PAY(1,"在线支付");
+
+        PaymentTypeEnum(int code,String value){
+            this.code = code;
+            this.value = value;
+        }
+        private String value;
+        private int code;
+
+        public String getValue() {
+            return value;
+        }
+
+        public int getCode() {
+            return code;
+        }
+    }
+
 
 
 }

@@ -1,6 +1,7 @@
 package com.waston.utils;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -17,6 +18,17 @@ public class DateUtil {
             return null;
         DateFormat dateFormat = new SimpleDateFormat(STANDARD_FORMAT);
         return dateFormat.format(date);
+    }
+
+    public static Date parseToDate(String str) {
+        DateFormat dateFormat = new SimpleDateFormat(STANDARD_FORMAT);
+        try {
+            Date date = dateFormat.parse(str);
+            return date;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }

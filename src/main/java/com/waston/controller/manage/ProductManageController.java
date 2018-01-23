@@ -150,7 +150,7 @@ public class ProductManageController {
     @ResponseBody
     public Map<String, Object> uploadFileByRichtext(@RequestParam(value = "upload_file",required = false)MultipartFile multipartFile, HttpSession session) {
         Map<String, Object> map = new LinkedHashMap<>();
-        if(multipartFile == null) {
+        if(multipartFile == null || StringUtils.isEmpty(multipartFile.getOriginalFilename())) {
             map.put("success", false);
             map.put("msg", "请选择文件");
             map.put("file_path", "");

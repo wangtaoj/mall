@@ -40,14 +40,18 @@ public class FileServiceImpl implements FileService {
         File file = new File(path, newName);
         //上传到FTP服务器上
         try {
+            //先上传到服务器上, 再从服务器把文件上传到FTP服务器中
             multipartFile.transferTo(file);
-            FTPUtil.uploadFile(Arrays.asList(file));
-            file.delete();
+            if(FTPUtil.uploadFile(dir, Arrays.asList(file))) {
+                logger.info("文件上传成功");
+                file.delete();
+                return dir + "/" + newName;
+            } else {
+                return "null";
+            }
         } catch (IOException e) {
             logger.error("文件上传失败:", e);
             return "null"; //上传失败标志
         }
-        logger.info("文件上传成功");
-        return "upload/" + dir + newName;
     }
 }

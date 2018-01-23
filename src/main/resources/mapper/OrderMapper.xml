@@ -199,4 +199,19 @@
             update_time  = #{updateTime,jdbcType=TIMESTAMP}
         WHERE id = #{id,jdbcType=INTEGER}
     </update>
+
+    <select id="selectByOrderNo" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM mmall_order
+        WHERE order_no = #{orderNo}
+    </select>
+
+    <select id="selectByOrderNoAndUserId" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM mmall_order
+        WHERE order_no = #{orderNo}
+        AND user_id = #{userId}
+    </select>
 </mapper>
