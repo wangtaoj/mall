@@ -158,4 +158,12 @@
         SET checked = #{checked}
         WHERE user_id = #{userId}
     </update>
+
+    <select id="selectAllCheckedByUserId" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM mmall_cart
+        WHERE checked = 1
+        AND user_id = #{userId}
+    </select>
 </mapper>

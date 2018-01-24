@@ -3,6 +3,8 @@ package com.waston.dao;
 import com.waston.pojo.Order;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 public interface OrderMapper {
     int deleteByPrimaryKey(Integer id);
 
@@ -30,4 +32,17 @@ public interface OrderMapper {
      * @return
      */
     Order selectByOrderNoAndUserId(@Param("orderNo")Long orderNo, @Param("userId")Integer userId);
+
+    /**
+     * 根据用户ID查询所有订单信息
+     * @param userId
+     * @return
+     */
+    List<Order> selectByUserId(Integer userId);
+
+    /**
+     * 获取所有订单信息
+     * @return
+     */
+    List<Order> selectAll();
 }

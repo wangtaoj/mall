@@ -2,7 +2,7 @@ package com.waston.utils;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import java.util.Random;
 
 /**
  * @author wangtao
@@ -14,6 +14,12 @@ public class MD5UtilTest {
 
         System.out.println(MD5Util.md5("111111"));
         System.out.println(MD5Util.md5("123456"));
+    }
+
+    @Test
+    public void testt() {
+        Long orderNo = Long.valueOf(System.currentTimeMillis() + "" + new Random().nextInt(100));
+        System.out.println(orderNo);
     }
 
 }

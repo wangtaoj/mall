@@ -13,9 +13,9 @@ import java.util.Random;
  */
 public class NameUtil {
 
-    public static final String DTLONG = "yyyyMMddHHmmss";
+    private static final String DTLONG = "yyyyMMddHHmmss";
 
-    public static final String DTSHORT = "yyyy/MM/dd";
+    private static final String DTSHORT = "yyyy/MM/dd";
 	
     /**
      * 用日期作为目录
@@ -34,8 +34,7 @@ public class NameUtil {
     public static String getName() {
         Date date=new Date();
         DateFormat df=new SimpleDateFormat(DTLONG);
-        String res = df.format(date) + randomNumber(3);
-        return res;
+        return df.format(date) + randomNumber(3);
     }
 
     /**

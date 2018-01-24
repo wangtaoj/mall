@@ -43,7 +43,7 @@ public class FTPUtil {
     /**
      * FTPClient客户端, Apache的
      */
-    private static FTPClient ftpClient = new FTPClient();
+    private static final FTPClient ftpClient = new FTPClient();
 
     /**
      * 连接FTP服务器
@@ -151,7 +151,7 @@ public class FTPUtil {
      */
     private static boolean makeDirsTemp(String dirs, boolean isClose) throws IOException {
         //如果ftpClient已连接, 否则重新连接服务器成功的话
-        if ((ftpClient != null && ftpClient.isConnected()) || connectServer(FTP_IP, FTP_PORT, FTP_USER, FTP_PASSWORD)) {
+        if ((ftpClient.isConnected()) || connectServer(FTP_IP, FTP_PORT, FTP_USER, FTP_PASSWORD)) {
             if (dirs.startsWith("/"))
                 dirs = dirs.substring(1);
             if (dirs.endsWith("/"))

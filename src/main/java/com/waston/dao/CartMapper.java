@@ -62,4 +62,11 @@ public interface CartMapper {
      * @return
      */
     int updateAllChecked(@Param("userId")Integer userId, @Param("checked")Integer checked);
+
+    /**
+     * 查询用户所有选中的购物车商品记录
+     * @param userId
+     * @return
+     */
+    List<Cart> selectAllCheckedByUserId(Integer userId);
 }

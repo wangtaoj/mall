@@ -68,6 +68,14 @@ public class Consts {
             this.value = value;
         }
 
+        public static  OrderStatusEnum valueOf(int code) {
+            for(OrderStatusEnum orderStatusEnum : values()) {
+                if(orderStatusEnum.getCode() == code)
+                    return orderStatusEnum;
+            }
+            return null;
+        }
+
         private String value;
         private int code;
         public String getValue() {
@@ -107,13 +115,23 @@ public class Consts {
             this.code = code;
             this.value = value;
         }
+
+        public static PaymentTypeEnum valueOf(int code) {
+            PaymentTypeEnum[] paymentTypeEnums = values();
+            for(PaymentTypeEnum paymentTypeEnum : paymentTypeEnums) {
+                if(paymentTypeEnum.getCode() == code) {
+                    return paymentTypeEnum;
+                }
+            }
+            return null;
+        }
+
         private String value;
         private int code;
 
         public String getValue() {
             return value;
         }
-
         public int getCode() {
             return code;
         }

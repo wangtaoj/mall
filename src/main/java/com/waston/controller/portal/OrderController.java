@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
@@ -51,6 +52,11 @@ public class OrderController {
         return orderService.pay(orderNo, user.getId(), path);
     }
 
+    /**
+     * 支付宝回调接口
+     * @param request
+     * @return
+     */
     @RequestMapping("/alipay_callback.do")
     @ResponseBody
     public Object alipayCallback(HttpServletRequest request){
@@ -89,6 +95,12 @@ public class OrderController {
         return "fail";
     }
 
+    /**
+     * 查询订单状态
+     * @param session
+     * @param orderNo
+     * @return
+     */
     @RequestMapping("/query_order_pay_status.do")
     @ResponseBody
     public ServerResponse<Boolean> queryOrderPayStatus(HttpSession session, Long orderNo){
@@ -103,6 +115,83 @@ public class OrderController {
         return ServerResponse.createBySuccess(false);
     }
 
+    /**
+     * 用户创建订单接口
+     * @param shippingId 地址ID
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = "/create.do", produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public ServerResponse addOrder(Integer shippingId, HttpSession session) {
+        User currentUser = (User)session.getAttribute(Consts.CURRENT_USER);
+        if(currentUser == null) {
+            return ServerResponse.createByError(ResponseCode.NEED_LOGIN.getStatus(), "还未登录");
+        }
+        return orderService.addOrder(currentUser.getId(), shippingId);
+    }
 
+    /**
+     * 获取购物车里的商品信息
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = "/get_order_cart_product.do", produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public ServerResponse getOrderCartProduct(HttpSession session) {
+        User currentUser = (User) session.getAttribute(Consts.CURRENT_USER);
+        if (currentUser == null) {
+            return ServerResponse.createByError(ResponseCode.NEED_LOGIN.getStatus(), "还未登录");
+        }
+        return orderService.getOrderCartProduct(currentUser.getId());
+    }
 
+    /**
+     * 列出所有订单
+     * @param pageNum
+     * @param pageSize
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = "/list.do", produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public ServerResponse listOrder(@RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum, @RequestParam(value = "pageSize", defaultValue = "10")Integer pageSize, HttpSession session) {
+        User currentUser = (User) session.getAttribute(Consts.CURRENT_USER);
+        if (currentUser == null) {
+            return ServerResponse.createByError(ResponseCode.NEED_LOGIN.getStatus(), "还未登录");
+        }
+        return orderService.listOrder(pageNum, pageSize, currentUser.getId());
+    }
+
+    /**
+     * 获取订单详情
+     * @param orderNo
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = "/detail.do", produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public ServerResponse detailOrder(Long orderNo, HttpSession session) {
+        User currentUser = (User) session.getAttribute(Consts.CURRENT_USER);
+        if (currentUser == null) {
+            return ServerResponse.createByError(ResponseCode.NEED_LOGIN.getStatus(), "还未登录");
+        }
+        return orderService.getOrder(orderNo, currentUser.getId());
+    }
+
+    /**
+     * 取消订单
+     * @param orderNo
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = "/cancel.do", produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public ServerResponse cancelOrder(Long orderNo, HttpSession session) {
+        User currentUser = (User) session.getAttribute(Consts.CURRENT_USER);
+        if (currentUser == null) {
+            return ServerResponse.createByError(ResponseCode.NEED_LOGIN.getStatus(), "还未登录");
+        }
+        return orderService.updateOrderStatus(orderNo, currentUser.getId());
+    }
 }

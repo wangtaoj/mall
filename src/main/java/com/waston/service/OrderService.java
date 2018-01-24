@@ -33,4 +33,73 @@ public interface OrderService {
      * @return
      */
     ServerResponse queryOrderPayStatus(Integer userId,Long orderNo);
+
+    /**
+     * 创建订单
+     * @param userId
+     * @param shippingId
+     * @return
+     */
+    ServerResponse addOrder(Integer userId, Integer shippingId);
+
+    /**
+     * 获取购物车里的商品信息
+     * @param userId
+     * @return
+     */
+    ServerResponse getOrderCartProduct(Integer userId);
+
+    /**
+     * 分页获取订单列表
+     * @param pageNum
+     * @param pageSize
+     * @param userId
+     * @return
+     */
+    ServerResponse listOrder(Integer pageNum, Integer pageSize, Integer userId);
+
+    /**
+     * 获取商品详情
+     * @param orderNo
+     * @param usreId
+     * @return
+     */
+    ServerResponse getOrder(Long orderNo, Integer usreId);
+
+    /**
+     * 取消订单
+     * @param orderNo
+     * @param usreId
+     * @return
+     */
+    ServerResponse updateOrderStatus(Long orderNo, Integer usreId);
+
+    /**
+     * 订单发货
+     * @param orderNo
+     * @return
+     */
+    ServerResponse updateOrderStatusToSend(Long orderNo);
+
+    /**
+     * 管理员获取订单列表
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    ServerResponse listOrderByManage(int pageNum, int pageSize);
+
+    /**
+     * 管理员获取订单详情
+     * @param orderNo
+     * @return
+     */
+    ServerResponse getOrderByManage(Long orderNo);
+
+    /**
+     * 搜索订单信息
+     * @param orderNo
+     * @return
+     */
+    ServerResponse search(int pageNum, int pageSize, Long orderNo);
 }
