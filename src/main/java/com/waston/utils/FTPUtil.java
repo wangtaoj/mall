@@ -33,7 +33,7 @@ public class FTPUtil {
      * 以及上传的目录
      */
     private static final String FTP_IP = PropertiesUtil.getProperty("ftp.server.ip");
-    private static final int FTP_PORT = 21;
+    private static final int FTP_PORT = Integer.valueOf(PropertiesUtil.getProperty("ftp.server.port", "21"));
     private static final String FTP_USER = PropertiesUtil.getProperty("ftp.user");
     private static final String FTP_PASSWORD = PropertiesUtil.getProperty("ftp.password");
 
