@@ -10,7 +10,7 @@ import com.waston.pojo.User;
 import com.waston.service.OrderService;
 import com.waston.utils.CookieUtil;
 import com.waston.utils.JsonUtil;
-import com.waston.utils.RedisUtil;
+import com.waston.utils.ShardedRedisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -205,7 +205,7 @@ public class OrderController {
     private User getUser (HttpServletRequest request) {
         String loginToken = CookieUtil.getSessionKey(request);
         if(loginToken != null) {
-            return JsonUtil.jsonToObject(RedisUtil.get(loginToken), User.class);
+            return JsonUtil.jsonToObject(ShardedRedisUtil.get(loginToken), User.class);
         }
         return null;
     }

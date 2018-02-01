@@ -7,7 +7,7 @@ import com.waston.pojo.User;
 import com.waston.service.UserService;
 import com.waston.utils.CookieUtil;
 import com.waston.utils.JsonUtil;
-import com.waston.utils.RedisUtil;
+import com.waston.utils.ShardedRedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,7 +47,7 @@ public class UserController {
             //回写cookie
             CookieUtil.addCookie(sessionId, response);
             //序列化
-            RedisUtil.setEx(sessionId, JsonUtil.objectToJson(serverResponse.getData()), Consts.SESSION_EXPIRE_TIME);
+            ShardedRedisUtil.setEx(sessionId, JsonUtil.objectToJson(serverResponse.getData()), Consts.SESSION_EXPIRE_TIME);
         }
         return serverResponse;
     }
@@ -63,7 +63,7 @@ public class UserController {
         //删除登录cookie && 移除redis用户信息
         String loginToken = CookieUtil.getSessionKey(request);
         if (loginToken != null) {
-            RedisUtil.del(loginToken);
+            ShardedRedisUtil.del(loginToken);
             CookieUtil.removeCookie(request, response);
             return ServerResponse.createBySuccess("退出成功");
         }
@@ -105,7 +105,7 @@ public class UserController {
         String loginToken = CookieUtil.getSessionKey(request);
         User user = null;
         if(loginToken != null) {
-            user = JsonUtil.jsonToObject(RedisUtil.get(loginToken), User.class);
+            user = JsonUtil.jsonToObject(ShardedRedisUtil.get(loginToken), User.class);
         }
         if(user == null) {
             return ServerResponse.createByError("用户未登录,无法获取当前用户信息");
@@ -163,7 +163,7 @@ public class UserController {
         String loginToken = CookieUtil.getSessionKey(request);
         User user = null;
         if(loginToken != null) {
-            user = JsonUtil.jsonToObject(RedisUtil.get(loginToken), User.class);
+            user = JsonUtil.jsonToObject(ShardedRedisUtil.get(loginToken), User.class);
         }
         if(user == null)
             return ServerResponse.createByError("还未登录");
@@ -182,7 +182,7 @@ public class UserController {
         String loginToken = CookieUtil.getSessionKey(request);
         User currentUser = null;
         if(loginToken != null) {
-            currentUser = JsonUtil.jsonToObject(RedisUtil.get(loginToken), User.class);
+            currentUser = JsonUtil.jsonToObject(ShardedRedisUtil.get(loginToken), User.class);
         }
         if(currentUser ==  null) {
             return ServerResponse.createByError("还未登录");
@@ -196,7 +196,7 @@ public class UserController {
         //更新成功, 更新redis的用户信息
         if(response.isSuccess()) {
             user.setPassword(currentUser.getPassword());
-            RedisUtil.setEx(loginToken, JsonUtil.objectToJson(user), Consts.SESSION_EXPIRE_TIME);
+            ShardedRedisUtil.setEx(loginToken, JsonUtil.objectToJson(user), Consts.SESSION_EXPIRE_TIME);
         }
         return response;
     }
@@ -213,7 +213,7 @@ public class UserController {
         String loginToken = CookieUtil.getSessionKey(request);
         User user = null;
         if(loginToken != null) {
-            user = JsonUtil.jsonToObject(RedisUtil.get(loginToken), User.class);
+            user = JsonUtil.jsonToObject(ShardedRedisUtil.get(loginToken), User.class);
         }
         if(user == null)
             return ServerResponse.createByError(ResponseCode.NEED_LOGIN.getStatus(),

@@ -10,7 +10,7 @@ import com.waston.service.ProductService;
 import com.waston.utils.CookieUtil;
 import com.waston.utils.JsonUtil;
 import com.waston.utils.PropertiesUtil;
-import com.waston.utils.RedisUtil;
+import com.waston.utils.ShardedRedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -221,7 +221,7 @@ public class ProductManageController {
     private User getUser (HttpServletRequest request) {
         String loginToken = CookieUtil.getSessionKey(request);
         if(loginToken != null) {
-            return JsonUtil.jsonToObject(RedisUtil.get(loginToken), User.class);
+            return JsonUtil.jsonToObject(ShardedRedisUtil.get(loginToken), User.class);
         }
         return null;
     }

@@ -8,7 +8,7 @@ import com.waston.dao.UserMapper;
 import com.waston.pojo.User;
 import com.waston.service.UserService;
 import com.waston.utils.MD5Util;
-import com.waston.utils.RedisUtil;
+import com.waston.utils.ShardedRedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -103,7 +103,7 @@ public class UserServiceImpl implements UserService{
             //使用UUID生成一个用户token返回, 并且缓存下来
             String token = UUID.randomUUID().toString();
             //十分钟有效
-            RedisUtil.setEx(Consts.TOKEN_PREFIX, token, Consts.TOKEN_EXPIRE_TIME);
+            ShardedRedisUtil.setEx(Consts.TOKEN_PREFIX, token, Consts.TOKEN_EXPIRE_TIME);
             return ServerResponse.createBySuccess(token);
         }
         return ServerResponse.createByError("问题答案错误");
@@ -116,7 +116,7 @@ public class UserServiceImpl implements UserService{
         if(validRes.isSuccess()) {
             return ServerResponse.createByError("用户不存在");
         }
-        String cacheToken = RedisUtil.get(Consts.TOKEN_PREFIX + username);
+        String cacheToken = ShardedRedisUtil.get(Consts.TOKEN_PREFIX + username);
         if(cacheToken == null)
             return ServerResponse.createByError("token已经失效");
         if(!Objects.equals(cacheToken, forgetToken))

@@ -7,7 +7,7 @@ import com.waston.pojo.User;
 import com.waston.service.UserService;
 import com.waston.utils.CookieUtil;
 import com.waston.utils.JsonUtil;
-import com.waston.utils.RedisUtil;
+import com.waston.utils.ShardedRedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,7 +49,7 @@ public class UserManageController {
                 //回写cookie
                 CookieUtil.addCookie(sessionId, response);
                 //序列化
-                RedisUtil.setEx(sessionId, JsonUtil.objectToJson(user), Consts.SESSION_EXPIRE_TIME);
+                ShardedRedisUtil.setEx(sessionId, JsonUtil.objectToJson(user), Consts.SESSION_EXPIRE_TIME);
             }
             return ServerResponse.createByError("普通用户, 权限不够");
         }
@@ -71,7 +71,7 @@ public class UserManageController {
         String loginToken = CookieUtil.getSessionKey(request);
         User currentUser = null;
         if(loginToken != null) {
-            currentUser = JsonUtil.jsonToObject(RedisUtil.get(loginToken), User.class);
+            currentUser = JsonUtil.jsonToObject(ShardedRedisUtil.get(loginToken), User.class);
         }
         if(currentUser == null)
             return ServerResponse.createByError(ResponseCode.NEED_LOGIN.getStatus(), "还未登录");

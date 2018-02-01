@@ -2,7 +2,7 @@ package com.waston.filter;
 
 import com.waston.common.Consts;
 import com.waston.utils.CookieUtil;
-import com.waston.utils.RedisUtil;
+import com.waston.utils.ShardedRedisUtil;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
@@ -32,7 +32,7 @@ public class SessionExpireFilter implements Filter{
             //重置用户信息的有效期
             String loginToken = CookieUtil.getSessionKey(req);
             if(loginToken != null) {
-                RedisUtil.expire(loginToken, Consts.SESSION_EXPIRE_TIME);
+                ShardedRedisUtil.expire(loginToken, Consts.SESSION_EXPIRE_TIME);
             }
         }
         chain.doFilter(req, res);
