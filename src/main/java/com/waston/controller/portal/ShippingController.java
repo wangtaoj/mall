@@ -1,18 +1,20 @@
 package com.waston.controller.portal;
 
-import com.waston.common.Consts;
 import com.waston.common.ResponseCode;
 import com.waston.common.ServerResponse;
 import com.waston.pojo.Shipping;
 import com.waston.pojo.User;
 import com.waston.service.ShippingService;
+import com.waston.utils.CookieUtil;
+import com.waston.utils.JsonUtil;
+import com.waston.utils.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @Author wangtao
@@ -28,13 +30,13 @@ public class ShippingController {
     /**
      * 添加地址接口
      * @param shipping
-     * @param session
+     * @param request
      * @return
      */
     @RequestMapping(value = "/add.do", produces = "application/json;charset=UTF-8")
     @ResponseBody
-    public ServerResponse addShipping(Shipping shipping, HttpSession session) {
-        User currentUser = (User)session.getAttribute(Consts.CURRENT_USER);
+    public ServerResponse addShipping(Shipping shipping, HttpServletRequest request) {
+        User currentUser = getUser(request);
         if(currentUser == null) {
             return ServerResponse.createByError(ResponseCode.NEED_LOGIN.getStatus(), "还未登录");
         }
@@ -44,13 +46,13 @@ public class ShippingController {
     /**
      * 删除地址接口
      * @param shippingId
-     * @param session
+     * @param request
      * @return
      */
     @RequestMapping(value = "/del.do", produces = "application/json;charset=UTF-8")
     @ResponseBody
-    public ServerResponse removeShipping(Integer shippingId, HttpSession session) {
-        User currentUser = (User)session.getAttribute(Consts.CURRENT_USER);
+    public ServerResponse removeShipping(Integer shippingId, HttpServletRequest request) {
+        User currentUser = getUser(request);
         if(currentUser == null) {
             return ServerResponse.createByError(ResponseCode.NEED_LOGIN.getStatus(), "还未登录");
         }
@@ -60,13 +62,13 @@ public class ShippingController {
     /**
      * 更新地址接口
      * @param shipping
-     * @param session
+     * @param request
      * @return
      */
     @RequestMapping(value = "/update.do", produces = "application/json;charset=UTF-8")
     @ResponseBody
-    public ServerResponse updateShipping(Shipping shipping, HttpSession session) {
-        User currentUser = (User)session.getAttribute(Consts.CURRENT_USER);
+    public ServerResponse updateShipping(Shipping shipping, HttpServletRequest request) {
+        User currentUser = getUser(request);
         if(currentUser == null) {
             return ServerResponse.createByError(ResponseCode.NEED_LOGIN.getStatus(), "还未登录");
         }
@@ -76,13 +78,13 @@ public class ShippingController {
     /**
      * 查看地址详情接口
      * @param shippingId
-     * @param session
+     * @param request
      * @return
      */
     @RequestMapping(value = "/select.do", produces = "application/json;charset=UTF-8")
     @ResponseBody
-    public ServerResponse detailShipping(Integer shippingId, HttpSession session) {
-        User currentUser = (User)session.getAttribute(Consts.CURRENT_USER);
+    public ServerResponse detailShipping(Integer shippingId, HttpServletRequest request) {
+        User currentUser = getUser(request);
         if(currentUser == null) {
             return ServerResponse.createByError(ResponseCode.NEED_LOGIN.getStatus(), "还未登录");
         }
@@ -93,20 +95,32 @@ public class ShippingController {
      * 获取地址列表接口
      * @param pageNum
      * @param pageSize
-     * @param session
+     * @param request
      * @return
      */
     @RequestMapping(value = "/list.do", produces = "application/json;charset=UTF-8")
     @ResponseBody
     public ServerResponse listShipping(@RequestParam(value = "pageNum", defaultValue = "1")int pageNum,
                                        @RequestParam(value = "pageSize", defaultValue = "10")int pageSize,
-                                       HttpSession session) {
-        User currentUser = (User)session.getAttribute(Consts.CURRENT_USER);
+                                       HttpServletRequest request) {
+        User currentUser = getUser(request);
         if(currentUser == null) {
             return ServerResponse.createByError(ResponseCode.NEED_LOGIN.getStatus(), "还未登录");
         }
         return shippingService.selectListShipping(pageNum, pageSize, currentUser.getId());
     }
 
+    /**
+     * 从redis获取user
+     * @param request
+     * @return
+     */
+    private User getUser (HttpServletRequest request) {
+        String loginToken = CookieUtil.getSessionKey(request);
+        if(loginToken != null) {
+            return JsonUtil.jsonToObject(RedisUtil.get(loginToken), User.class);
+        }
+        return null;
+    }
 
 }

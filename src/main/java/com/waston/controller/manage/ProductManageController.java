@@ -7,7 +7,10 @@ import com.waston.pojo.Product;
 import com.waston.pojo.User;
 import com.waston.service.FileService;
 import com.waston.service.ProductService;
+import com.waston.utils.CookieUtil;
+import com.waston.utils.JsonUtil;
 import com.waston.utils.PropertiesUtil;
+import com.waston.utils.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -16,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpServletRequest;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -38,14 +41,14 @@ public class ProductManageController {
     /**
      * 添加商品或者修改商品接口
      * @param product
-     * @param session
+     * @param request
      * @return
      */
     @RequestMapping(value = "/save.do", produces = "application/json;charset=utf-8")
     @ResponseBody
-    public ServerResponse productSaveOrUpdate(Product product, HttpSession session){
-        ServerResponse<String> response = check(session);
-        if(response != null)
+    public ServerResponse productSaveOrUpdate(Product product, HttpServletRequest request){
+        ServerResponse response = check(request);
+        if(!response.isSuccess())
             return response;
         return productService.saveOrUpdateProduct(product);
 
@@ -55,13 +58,14 @@ public class ProductManageController {
      * 修改商品状态信息, 上下架
      * @param productId
      * @param status
+     * @param request
      * @return
      */
     @RequestMapping(value = "/set_sale_status.do", produces = "application/json;charset=utf-8")
     @ResponseBody
-    public ServerResponse setProductStatus(Integer productId, Integer status, HttpSession session) {
-        ServerResponse<String> response = check(session);
-        if(response != null)
+    public ServerResponse setProductStatus(Integer productId, Integer status, HttpServletRequest request) {
+        ServerResponse response = check(request);
+        if(!response.isSuccess())
             return response;
         return productService.updateProductStatus(productId, status);
     }
@@ -69,14 +73,14 @@ public class ProductManageController {
     /**
      * 商品详情接口
      * @param productId
-     * @param session
+     * @param request
      * @return
      */
     @RequestMapping(value = "/detail.do", produces = "application/json;charset=utf-8")
     @ResponseBody
-    public ServerResponse getDetail(Integer productId, HttpSession session){
-        ServerResponse<String> response = check(session);
-        if(response != null)
+    public ServerResponse getDetail(Integer productId, HttpServletRequest request){
+        ServerResponse response = check(request);
+        if(!response.isSuccess())
             return response;
         return productService.getDetail(productId);
     }
@@ -85,32 +89,37 @@ public class ProductManageController {
      * 分页查询接口
      * @param pageNum
      * @param pageSize
-     * @param session
+     * @param request
      * @return
      */
     @RequestMapping(value = "/list.do", produces = "application/json;charset=utf-8")
     @ResponseBody
-    public ServerResponse listProduct(@RequestParam(value = "pageNum",defaultValue = "1")int pageNum, @RequestParam(value = "pageSize",defaultValue = "10")int pageSize, HttpSession session){
-        ServerResponse<String> response = check(session);
-        if(response != null)
+    public ServerResponse listProduct(@RequestParam(value = "pageNum",defaultValue = "1")int pageNum,
+                                      @RequestParam(value = "pageSize",defaultValue = "10")int pageSize,
+                                      HttpServletRequest request){
+        ServerResponse response = check(request);
+        if(!response.isSuccess())
             return response;
         return productService.getList(pageNum, pageSize);
     }
 
     /**
      * 商品搜索接口
-     * @param session
      * @param productName
      * @param productId
      * @param pageNum
      * @param pageSize
+     * @param request
      * @return
      */
     @RequestMapping(value = "/search.do", produces = "application/json;charset=utf-8")
     @ResponseBody
-    public ServerResponse productSearch(HttpSession session,String productName,Integer productId, @RequestParam(value = "pageNum",defaultValue = "1") int pageNum,@RequestParam(value = "pageSize",defaultValue = "10") int pageSize){
-        ServerResponse<String> response = check(session);
-        if(response != null)
+    public ServerResponse productSearch(String productName,Integer productId,
+                                        @RequestParam(value = "pageNum",defaultValue = "1") int pageNum,
+                                        @RequestParam(value = "pageSize",defaultValue = "10") int pageSize,
+                                        HttpServletRequest request){
+        ServerResponse response = check(request);
+        if(!response.isSuccess())
             return response;
         return productService.searchProduct(productName, productId, pageNum, pageSize);
     }
@@ -118,16 +127,17 @@ public class ProductManageController {
     /**
      * 图片上传接口
      * @param multipartFile
-     * @param session
+     * @param request
      * @return
      */
     @RequestMapping(value = "/upload.do", produces = "application/json;charset=utf-8")
     @ResponseBody
-    public ServerResponse uploadFile(@RequestParam(value = "upload_file",required = false)MultipartFile multipartFile, HttpSession session) {
-        ServerResponse<String> response = check(session);
-        if(response != null)
+    public ServerResponse uploadFile(@RequestParam(value = "upload_file",required = false)MultipartFile multipartFile,
+                                     HttpServletRequest request) {
+        ServerResponse response = check(request);
+        if(!response.isSuccess())
             return response;
-        String path = session.getServletContext().getRealPath("/upload");
+        String path = request.getServletContext().getRealPath("/upload");
         String fileName = fileService.uploadFile(multipartFile, path);
         if(StringUtils.isEmpty(fileName))
             return ServerResponse.createByError("请选择一个图片文件");
@@ -143,12 +153,13 @@ public class ProductManageController {
     /**
      * 富文本图片上传接口, 返回指定的json格式
      * @param multipartFile
-     * @param session
+     * @param request
      * @return
      */
     @RequestMapping(value = "/richtext_img_upload.do", produces = "application/json;charset=utf-8")
     @ResponseBody
-    public Map<String, Object> uploadFileByRichtext(@RequestParam(value = "upload_file",required = false)MultipartFile multipartFile, HttpSession session) {
+    public Map<String, Object> uploadFileByRichtext(@RequestParam(value = "upload_file",required = false)MultipartFile multipartFile,
+                                                    HttpServletRequest request) {
         Map<String, Object> map = new LinkedHashMap<>();
         if(multipartFile == null || StringUtils.isEmpty(multipartFile.getOriginalFilename())) {
             map.put("success", false);
@@ -156,7 +167,7 @@ public class ProductManageController {
             map.put("file_path", "");
             return map;
         }
-        User currentUser = (User)session.getAttribute(Consts.CURRENT_USER);
+        User currentUser = getUser(request);
         if(currentUser == null) {
             map.put("success", false);
             map.put("msg", "还未登录");
@@ -169,7 +180,7 @@ public class ProductManageController {
             map.put("file_path", multipartFile.getOriginalFilename());
             return map;
         }
-        String path = session.getServletContext().getRealPath("/upload");
+        String path = request.getServletContext().getRealPath("/upload");
         String fileName = fileService.uploadFile(multipartFile, path);
         //上传失败
         if(fileName == null || Objects.equals("null", fileName)) {
@@ -187,11 +198,11 @@ public class ProductManageController {
 
     /**
      * 检查权限
-     * @param session
+     * @param request
      * @return
      */
-    private ServerResponse<String> check(HttpSession session) {
-        User currentUser = (User)session.getAttribute(Consts.CURRENT_USER);
+    private ServerResponse check(HttpServletRequest request) {
+        User currentUser = getUser(request);
         if(currentUser == null) {
             return ServerResponse.createByError(ResponseCode.NEED_LOGIN.getStatus(),"还未登录");
         }
@@ -199,8 +210,20 @@ public class ProductManageController {
         if(currentUser.getRole() != Consts.ADMIN_ROLE) {
             return ServerResponse.createByError("无权限操作!");
         }
-        return null;
+        return ServerResponse.createBySuccess(currentUser);
     }
 
+    /**
+     * 从redis获取user
+     * @param request
+     * @return
+     */
+    private User getUser (HttpServletRequest request) {
+        String loginToken = CookieUtil.getSessionKey(request);
+        if(loginToken != null) {
+            return JsonUtil.jsonToObject(RedisUtil.get(loginToken), User.class);
+        }
+        return null;
+    }
 
 }

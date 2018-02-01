@@ -19,6 +19,12 @@ public class Consts {
     //md5算法盐值
     public static final String SALT = "defgujih%$#^!^*$";
 
+    //找回密码所用的token前缀
+    public static final String TOKEN_PREFIX = "token_";
+
+    //token有效时间10分钟
+    public static final int TOKEN_EXPIRE_TIME = 60 * 10;
+
     // checkValid type=username
     public static final String TYPE_USERNAME = "username";
 
@@ -27,6 +33,9 @@ public class Consts {
 
     //session存取当前用户的key值
     public static final String CURRENT_USER = "currentUser";
+
+    //redis存取用户的过期时间
+    public static final int SESSION_EXPIRE_TIME = 60 * 30;
 
     //商品在售状态
     public static final int ON_SALE = 1;

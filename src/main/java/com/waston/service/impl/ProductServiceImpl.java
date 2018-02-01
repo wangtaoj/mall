@@ -93,6 +93,7 @@ public class ProductServiceImpl implements ProductService {
         return ServerResponse.createBySuccess(productDetailVo);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public ServerResponse<PageInfo> getList(int pageNum, int pageSize) {
         //开始分页, 设置参数
@@ -110,6 +111,7 @@ public class ProductServiceImpl implements ProductService {
         return ServerResponse.createBySuccess(pageResult);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public ServerResponse<PageInfo> searchProduct(String productName,Integer productId,int pageNum,int pageSize){
         //开始分页
@@ -130,6 +132,7 @@ public class ProductServiceImpl implements ProductService {
         return ServerResponse.createBySuccess(pageResult);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public ServerResponse<PageInfo> getProductByKeywordCategory(String keyword, Integer categoryId, int pageNum, int pageSize, String orderBy) {
         //两者为空, 参数错误
