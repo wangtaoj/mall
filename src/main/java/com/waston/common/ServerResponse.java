@@ -3,13 +3,15 @@ package com.waston.common;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import java.io.Serializable;
+
 /**
  * 封装返回的json数据
  * @author wangtao
  * @date 2018-2018/1/10-21:55
  **/
 @JsonInclude(JsonInclude.Include.NON_NULL)  //属性为null的字段不序列化
-public class ServerResponse<T> {
+public class ServerResponse<T> implements Serializable{
 
     //状态 0:成功  1: 失败  -----ResponseCode枚举类
     private int status;

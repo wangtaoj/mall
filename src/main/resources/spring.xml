@@ -15,28 +15,35 @@
      	http://www.springframework.org/schema/aop/spring-aop.xsd">
 
     <!-- 开启注解扫描 -->
-    <context:component-scan base-package="com.waston.service"/>
+    <context:component-scan base-package="com.waston">
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
 
     <!-- 事务管理配置 -->
     <!-- 事务管理器,mybatis使用的是jdbc的管理器 -->
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource"/>
     </bean>
-    <!-- 事务管理增强 -->
-    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+    <!-- 事务管理增强
+        transaction-manager="transactionManager" :默认的事务管理器名字transactionManage
+        所以当配置的事务管理器Bean id = transactionManager时可以不写此属性
+    -->
+    <tx:advice id="txAdvice">
         <tx:attributes>
-            <!--propagation="REQUIRED":如果当前存在事务,那么在当前事务执行,如果没有那么开启一个新的事务环境执行 -->
-            <tx:method name="find*" propagation="REQUIRED" read-only="true" rollback-for="Exception" />
-            <tx:method name="get*" propagation="REQUIRED" read-only="true" rollback-for="Exception" />
-            <tx:method name="select*" propagation="REQUIRED" read-only="true" rollback-for="Exception" />
+            <!--propagation="REQUIRED":如果当前存在事务,那么在当前事务执行,如果没有那么开启一个新的事务环境执行
+                默认REQUIRED
+            -->
+            <tx:method name="find*" read-only="true" rollback-for="Exception" />
+            <tx:method name="get*"  read-only="true" rollback-for="Exception" />
+            <tx:method name="select*"  read-only="true" rollback-for="Exception" />
 
-            <tx:method name="add*" propagation="REQUIRED" rollback-for="Exception" />
-            <tx:method name="save*" propagation="REQUIRED" rollback-for="Exception" />
-            <tx:method name="create*" propagation="REQUIRED" rollback-for="Exception" />
-            <tx:method name="insert*" propagation="REQUIRED" rollback-for="Exception" />
-            <tx:method name="update*" propagation="REQUIRED" rollback-for="Exception" />
-            <tx:method name="delete*" propagation="REQUIRED" rollback-for="Exception" />
-            <tx:method name="remove*" propagation="REQUIRED" rollback-for="Exception" />
+            <tx:method name="add*" rollback-for="Exception" />
+            <tx:method name="save*" rollback-for="Exception" />
+            <tx:method name="create*" rollback-for="Exception" />
+            <tx:method name="insert*" rollback-for="Exception" />
+            <tx:method name="update*" rollback-for="Exception" />
+            <tx:method name="delete*" rollback-for="Exception" />
+            <tx:method name="remove*" rollback-for="Exception" />
             <!-- 其它 propagation="SUPPORTS" 如果存在一个事务支持当前事务, 否则非事务执行 -->
             <tx:method name="*" propagation="SUPPORTS" />
         </tx:attributes>
