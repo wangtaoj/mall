@@ -32,6 +32,22 @@
 		<property name="defaultEncoding" value="UTF-8"/>
 	</bean>
 	
+	<!-- 拦截器配置 -->
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<!--
+			/manage/** 拦截manage下的所有请求, 包括子目录
+			/manage/* 拦截manage下的所有请求, 不包括子目录
+			-->
+			<mvc:mapping path="/manage/**"/>
+			<!--排除登录请求 -->
+			<mvc:exclude-mapping path="/manage/user/login.do"/>
+			<!--排除富文本上传接口, 有接口自己判断权限, 因为需要返回特定的json格式 -->
+			<mvc:exclude-mapping path="/manage/product/richtext_img_upload.do"/>
+			<bean class="com.waston.interceptor.AuthorityInterceptor"/>
+		</mvc:interceptor>
+	</mvc:interceptors>
+	
       	
 </beans>      
 

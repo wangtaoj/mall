@@ -49,7 +49,6 @@ public class JsonUtilTest {
         List<JsonBean> list1 = JsonUtil.jsonToList(json, JsonBean.class);
         System.out.println(list1);
 
-
     }
 
 }

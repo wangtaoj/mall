@@ -1,7 +1,6 @@
 package com.waston.controller.manage;
 
 import com.waston.common.Consts;
-import com.waston.common.ResponseCode;
 import com.waston.common.ServerResponse;
 import com.waston.pojo.Product;
 import com.waston.pojo.User;
@@ -41,15 +40,11 @@ public class ProductManageController {
     /**
      * 添加商品或者修改商品接口
      * @param product
-     * @param request
      * @return
      */
     @RequestMapping(value = "/save.do", produces = "application/json;charset=utf-8")
     @ResponseBody
-    public ServerResponse productSaveOrUpdate(Product product, HttpServletRequest request){
-        ServerResponse response = check(request);
-        if(!response.isSuccess())
-            return response;
+    public ServerResponse productSaveOrUpdate(Product product){
         return productService.saveOrUpdateProduct(product);
 
     }
@@ -58,30 +53,22 @@ public class ProductManageController {
      * 修改商品状态信息, 上下架
      * @param productId
      * @param status
-     * @param request
      * @return
      */
     @RequestMapping(value = "/set_sale_status.do", produces = "application/json;charset=utf-8")
     @ResponseBody
-    public ServerResponse setProductStatus(Integer productId, Integer status, HttpServletRequest request) {
-        ServerResponse response = check(request);
-        if(!response.isSuccess())
-            return response;
+    public ServerResponse setProductStatus(Integer productId, Integer status) {
         return productService.updateProductStatus(productId, status);
     }
 
     /**
      * 商品详情接口
      * @param productId
-     * @param request
      * @return
      */
     @RequestMapping(value = "/detail.do", produces = "application/json;charset=utf-8")
     @ResponseBody
-    public ServerResponse getDetail(Integer productId, HttpServletRequest request){
-        ServerResponse response = check(request);
-        if(!response.isSuccess())
-            return response;
+    public ServerResponse getDetail(Integer productId){
         return productService.getDetail(productId);
     }
 
@@ -89,17 +76,12 @@ public class ProductManageController {
      * 分页查询接口
      * @param pageNum
      * @param pageSize
-     * @param request
      * @return
      */
     @RequestMapping(value = "/list.do", produces = "application/json;charset=utf-8")
     @ResponseBody
     public ServerResponse listProduct(@RequestParam(value = "pageNum",defaultValue = "1")int pageNum,
-                                      @RequestParam(value = "pageSize",defaultValue = "10")int pageSize,
-                                      HttpServletRequest request){
-        ServerResponse response = check(request);
-        if(!response.isSuccess())
-            return response;
+                                      @RequestParam(value = "pageSize",defaultValue = "10")int pageSize){
         return productService.getList(pageNum, pageSize);
     }
 
@@ -109,18 +91,13 @@ public class ProductManageController {
      * @param productId
      * @param pageNum
      * @param pageSize
-     * @param request
      * @return
      */
     @RequestMapping(value = "/search.do", produces = "application/json;charset=utf-8")
     @ResponseBody
     public ServerResponse productSearch(String productName,Integer productId,
                                         @RequestParam(value = "pageNum",defaultValue = "1") int pageNum,
-                                        @RequestParam(value = "pageSize",defaultValue = "10") int pageSize,
-                                        HttpServletRequest request){
-        ServerResponse response = check(request);
-        if(!response.isSuccess())
-            return response;
+                                        @RequestParam(value = "pageSize",defaultValue = "10") int pageSize){
         return productService.searchProduct(productName, productId, pageNum, pageSize);
     }
 
@@ -134,9 +111,6 @@ public class ProductManageController {
     @ResponseBody
     public ServerResponse uploadFile(@RequestParam(value = "upload_file",required = false)MultipartFile multipartFile,
                                      HttpServletRequest request) {
-        ServerResponse response = check(request);
-        if(!response.isSuccess())
-            return response;
         String path = request.getServletContext().getRealPath("/upload");
         String fileName = fileService.uploadFile(multipartFile, path);
         if(StringUtils.isEmpty(fileName))
@@ -194,23 +168,6 @@ public class ProductManageController {
         map.put("msg", "文件上传成功");
         map.put("file_path", host + fileName);
         return map;
-    }
-
-    /**
-     * 检查权限
-     * @param request
-     * @return
-     */
-    private ServerResponse check(HttpServletRequest request) {
-        User currentUser = getUser(request);
-        if(currentUser == null) {
-            return ServerResponse.createByError(ResponseCode.NEED_LOGIN.getStatus(),"还未登录");
-        }
-
-        if(currentUser.getRole() != Consts.ADMIN_ROLE) {
-            return ServerResponse.createByError("无权限操作!");
-        }
-        return ServerResponse.createBySuccess(currentUser);
     }
 
     /**

@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 public class JsonUtil {
@@ -64,6 +65,8 @@ public class JsonUtil {
 	 * @return
 	 */
 	public static <T> T jsonToObject(String json,Class<T> cls){
+		if(json == null || Objects.equals(json, ""))
+			return null;
 		try {
 			return objectMapper.readValue(json, cls);
 		} catch (IOException e) {
@@ -79,6 +82,8 @@ public class JsonUtil {
 	 * @return
 	 */
 	public static <T> List<T> jsonToList(String json,Class<T> cls){
+		if(json == null || Objects.equals(json, ""))
+			return null;
 		JavaType javaType = objectMapper.getTypeFactory().constructCollectionType(List.class, cls);
 		try {
 			return objectMapper.readValue(json, javaType);
@@ -95,6 +100,8 @@ public class JsonUtil {
 	 * @return
 	 */
 	public static <T> Set<T> jsonToSet(String json,Class<T> cls){
+		if(json == null || Objects.equals(json, ""))
+			return null;
 		JavaType javaType = objectMapper.getTypeFactory().constructCollectionType(Set.class, cls);
 		try {
 			return objectMapper.readValue(json, javaType);
@@ -111,6 +118,8 @@ public class JsonUtil {
 	 * @return
 	 */
 	public static <T> Map<String,T> jsonToMap(String json,Class<T> cls){
+		if(json == null || Objects.equals(json, ""))
+			return null;
 		//构造一个java类型Map<String,T>
 		JavaType javaType = objectMapper.getTypeFactory().constructMapType(Map.class,String.class,cls);
 		try {
@@ -128,6 +137,8 @@ public class JsonUtil {
 	 * @return
 	 */
 	public static <T> Map<String,List<T>> jsonToMapList(String json,Class<T> cls){
+		if(json == null || Objects.equals(json, ""))
+			return null;
 		//将普通的java类型转为JavaType对象
 		JavaType temp1 = objectMapper.getTypeFactory().constructType(String.class);
 		//做一个List<泛型>的JavaType

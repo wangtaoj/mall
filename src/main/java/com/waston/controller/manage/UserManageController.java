@@ -1,7 +1,6 @@
 package com.waston.controller.manage;
 
 import com.waston.common.Consts;
-import com.waston.common.ResponseCode;
 import com.waston.common.ServerResponse;
 import com.waston.pojo.User;
 import com.waston.service.UserService;
@@ -50,8 +49,9 @@ public class UserManageController {
                 CookieUtil.addCookie(sessionId, response);
                 //序列化
                 ShardedRedisUtil.setEx(sessionId, JsonUtil.objectToJson(user), Consts.SESSION_EXPIRE_TIME);
+            } else {
+                return ServerResponse.createByError("普通用户, 权限不够");
             }
-            return ServerResponse.createByError("普通用户, 权限不够");
         }
         return serverResponse;
     }
@@ -60,23 +60,12 @@ public class UserManageController {
      * 分页获取用户接口
      * @param pageNum
      * @param pageSize
-     * @param request
      * @return
      */
     @RequestMapping(value = "/list.do", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
     @ResponseBody
     public ServerResponse listUsers(@RequestParam(value = "pageNum", defaultValue = "1")int pageNum,
-                                    @RequestParam(value = "pageNum", defaultValue = "10")int pageSize,
-                                    HttpServletRequest request) {
-        String loginToken = CookieUtil.getSessionKey(request);
-        User currentUser = null;
-        if(loginToken != null) {
-            currentUser = JsonUtil.jsonToObject(ShardedRedisUtil.get(loginToken), User.class);
-        }
-        if(currentUser == null)
-            return ServerResponse.createByError(ResponseCode.NEED_LOGIN.getStatus(), "还未登录");
-        if(currentUser.getRole() != Consts.ADMIN_ROLE)
-            return ServerResponse.createByError("普通用户, 权限不够");
+                                    @RequestParam(value = "pageNum", defaultValue = "10")int pageSize) {
         return userService.listUsers(pageNum, pageSize);
     }
 }
