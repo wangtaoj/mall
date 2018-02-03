@@ -67,12 +67,18 @@ public interface OrderService {
     ServerResponse getOrder(Long orderNo, Integer usreId);
 
     /**
-     * 取消订单
+     * 用户主动取消自己的订单并且恢复下单时减少的库存
      * @param orderNo
      * @param usreId
      * @return
      */
     ServerResponse updateOrderStatus(Long orderNo, Integer usreId);
+
+    /**
+     * 系统定时取消下单一小时还未支付的订单并且恢复下单时减少的库存
+     * @param hour
+     */
+    void updateAndCloseOrder(int hour);
 
     /**
      * 订单发货

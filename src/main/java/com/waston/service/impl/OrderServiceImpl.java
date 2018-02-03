@@ -27,6 +27,7 @@ import com.waston.vo.OrderProductVo;
 import com.waston.vo.OrderVo;
 import com.waston.vo.ShippingVo;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -205,6 +206,8 @@ public class OrderServiceImpl implements OrderService {
         return ServerResponse.createByError("取消订单失败");
     }
 
+    //manage
+    @Override
     public ServerResponse updateOrderStatusToSend(Long orderNo) {
         if(orderNo == null) {
             return ServerResponse.createByError("参数错误, 请选择一个订单");
@@ -223,7 +226,6 @@ public class OrderServiceImpl implements OrderService {
         return ServerResponse.createByError("设置订单发货失败");
     }
 
-    //manage
     @Override
     public ServerResponse listOrderByManage(int pageNum, int pageSize) {
         PageHelper.startPage(pageNum, pageSize);
@@ -266,6 +268,21 @@ public class OrderServiceImpl implements OrderService {
             return ServerResponse.createBySuccess(pageResult);
         }
         return ServerResponse.createByError("订单不存在");
+    }
+
+    @Override
+    public void updateAndCloseOrder(int hour) {
+        //查询在下单一个小时还未支付的订单
+        Date time = DateUtils.addHours(new Date(), -1 * hour);
+        List<Order> orders = orderMapper.selectNeedCloseOrder(Consts.OrderStatusEnum.NO_PAY.getCode(), DateUtil.toString(time));
+        for(Order order : orders) {
+            List<OrderItem> orderItems = orderItemMapper.selectListByOrderNo(order.getOrderNo());
+            //将商品库存恢复
+            addProductStock(orderItems);
+            order.setStatus(Consts.OrderStatusEnum.CANCELED.getCode());
+            order.setUpdateTime(new Date());
+            orderMapper.updateByPrimaryKeySelective(order);
+        }
     }
 
     /**
@@ -330,7 +347,10 @@ public class OrderServiceImpl implements OrderService {
     private void reduceProductStock(List<OrderItem> orderItems){
         for(OrderItem orderItem : orderItems){
             Product product = productMapper.selectByPrimaryKey(orderItem.getProductId());
+            if(product == null)
+                continue;
             product.setStock(product.getStock()-orderItem.getQuantity());
+            product.setUpdateTime(new Date());
             productMapper.updateByPrimaryKeySelective(product);
         }
     }
@@ -342,7 +362,10 @@ public class OrderServiceImpl implements OrderService {
     private void addProductStock(List<OrderItem> orderItems) {
         for(OrderItem orderItem : orderItems){
             Product product = productMapper.selectByPrimaryKey(orderItem.getProductId());
+            if(product == null)
+                continue;
             product.setStock(product.getStock() + orderItem.getQuantity());
+            product.setUpdateTime(new Date());
             productMapper.updateByPrimaryKeySelective(product);
         }
     }

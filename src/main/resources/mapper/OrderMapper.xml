@@ -229,5 +229,16 @@
         FROM mmall_order
         ORDER BY create_time DESC
     </select>
+    
+    <select id="selectNeedCloseOrder" resultMap="BaseResultMap" parameterType="map">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM mmall_order
+        WHERE status = #{status}
+        <![CDATA[
+        AND create_time <= #{time}
+        ]]>
+        ORDER BY create_time DESC
+    </select>
 
 </mapper>

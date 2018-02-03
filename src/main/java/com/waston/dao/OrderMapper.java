@@ -45,4 +45,6 @@ public interface OrderMapper {
      * @return
      */
     List<Order> selectAll();
+
+    List<Order> selectNeedCloseOrder(@Param("status")Integer status, @Param("time")String time);
 }

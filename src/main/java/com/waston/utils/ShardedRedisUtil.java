@@ -77,6 +77,26 @@ public class ShardedRedisUtil {
     }
 
     /**
+     * 设置key, value前先判断key是否存在, 存在着不设置，返回false
+     * @param key
+     * @param value
+     * @return
+     */
+    public static boolean setnx(String key, String value) {
+        ShardedJedis jedis = null;
+        Long res = null;
+        try {
+            jedis = ShardedRedisPool.getJedis();
+            res = jedis.setnx(key, value);
+            ShardedRedisPool.returnResource(jedis);
+        } catch (Exception e) {
+            logger.error("set key:{} value:{} error",key,value,e);
+            ShardedRedisPool.returnBrokenResource(jedis);
+        }
+        return (res != null && res > 0);
+    }
+
+    /**
      * 获取key所对应的value
      * @param key
      * @return
@@ -90,6 +110,20 @@ public class ShardedRedisUtil {
             ShardedRedisPool.returnResource(jedis);
         } catch (Exception e) {
             logger.error("get key:{} error",key,e);
+            ShardedRedisPool.returnBrokenResource(jedis);
+        }
+        return result;
+    }
+
+    public static String getSet(String key, String value){
+        ShardedJedis jedis = null;
+        String result = null;
+        try {
+            jedis = ShardedRedisPool.getJedis();
+            result = jedis.getSet(key, value);
+            ShardedRedisPool.returnResource(jedis);
+        } catch (Exception e) {
+            logger.error("getSet key:{} error",key,e);
             ShardedRedisPool.returnBrokenResource(jedis);
         }
         return result;
