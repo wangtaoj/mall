@@ -9,6 +9,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 关闭订单的一个定时任务
@@ -62,7 +63,7 @@ public class CloseOrderTask {
      *  继续演进,在将锁存进redis中时, 将值存当前的时间戳
      *  当第一次拿锁失败时再尝试去获取锁, 看锁的存的时间戳+一个超时时间与当前时间戳比较
      */
-    @Scheduled(cron = "0 0/1 * * * ?")
+    @Scheduled(cron = "0 0/2 * * * ?")
     public void closeOrderEvolve() {
         logger.info("定时关单任务开启");
         if(ShardedRedisUtil.setnx(CLOSE_ORDER_LOCK, System.currentTimeMillis() + "")) {
@@ -72,8 +73,8 @@ public class CloseOrderTask {
             if(oldValue != null && System.currentTimeMillis() >= EXPIRE_TIME + Long.parseLong(oldValue)) {
                 //有效期时间已过, 我有权利获取到锁
                 String value = ShardedRedisUtil.getSet(CLOSE_ORDER_LOCK, System.currentTimeMillis() + "");
-                //两者值相等, 拿到锁
-                if(Objects.equals(oldValue, value)) {
+                //value为空或者两者值相等, 拿到锁
+                if(value == null || Objects.equals(oldValue, value)) {
                     closeOrderTemp(1);
                 } else {
                     //不相等, 说明有别的线程或者进程进行了修改, 别人抢先了, 获取失败
@@ -87,10 +88,18 @@ public class CloseOrderTask {
     }
 
     private void closeOrderTemp(int hour) {
-        //设置锁成功, 那么继续设置一个有效期, 防止死锁
         logger.info("{}拿到锁", Thread.currentThread().getName());
         //关单业务操作
         orderService.updateAndCloseOrder(hour);
+        try {
+            /*
+                当业务执行时间过短,也就是说拿到锁马上又释放锁，这样可能会使一次任务调度会有多个tomcat拿到锁
+                不是想要的结果, 只想一次调度只有一个tomcat拿到锁而进行业务操作,暂停一秒
+             */
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+            logger.error("线程被中断", e);
+        }
         //释放锁
         ShardedRedisUtil.del(CLOSE_ORDER_LOCK);
         logger.info("{}释放锁", Thread.currentThread().getName());

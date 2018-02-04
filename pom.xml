@@ -40,12 +40,6 @@
             <version>1.1.2</version>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-core</artifactId>
-            <version>1.1.2</version>
-            <scope>compile</scope>
-        </dependency>
 
         <!--数据库依赖-->
         <dependency>
