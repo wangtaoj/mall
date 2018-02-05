@@ -9,6 +9,7 @@ import com.waston.pojo.Cart;
 import com.waston.pojo.Product;
 import com.waston.service.CartService;
 import com.waston.utils.BigDecimalUtil;
+import com.waston.utils.PropertiesUtil;
 import com.waston.vo.CartProductVo;
 import com.waston.vo.CartVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -197,6 +198,7 @@ public class CartServiceImpl implements CartService {
         cartVo.setCartProductVoList(cartProductVoList);
         cartVo.setAllChecked(cartMapper.selectAllChecked(userId) == 0);
         cartVo.setCartTotalPrice(cartTotalPrice);
+        cartVo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix"));
         return cartVo;
     }
 }

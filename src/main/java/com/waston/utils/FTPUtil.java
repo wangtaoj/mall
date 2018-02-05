@@ -84,6 +84,13 @@ public class FTPUtil {
         return result;
     }
 
+    /**
+     * 上传到指定目录
+     * @param remoteDir 远程服务端目录(可以是多级目录), 处于根目录下 如myImages/ftp, 以斜杠区分
+     * @param fileList
+     * @return
+     * @throws IOException
+     */
     public static boolean uploadFile(String remoteDir, List<File> fileList) throws IOException{
         logger.info("开始上传文件");
         boolean result = upload(remoteDir, fileList);

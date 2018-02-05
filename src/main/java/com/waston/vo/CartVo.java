@@ -12,6 +12,7 @@ public class CartVo {
     private List<CartProductVo> cartProductVoList;
     private BigDecimal cartTotalPrice;
     private Boolean allChecked;//是否已经都勾选
+    private String imageHost;
 
     public List<CartProductVo> getCartProductVoList() {
         return cartProductVoList;
@@ -37,4 +38,11 @@ public class CartVo {
         this.allChecked = allChecked;
     }
 
+    public String getImageHost() {
+        return imageHost;
+    }
+
+    public void setImageHost(String imageHost) {
+        this.imageHost = imageHost;
+    }
 }

@@ -547,9 +547,11 @@ public class OrderServiceImpl implements OrderService {
                 //细节细节细节
                 String qrPath = String.format(path+"/qr-%s.png",response.getOutTradeNo());
                 String qrFileName = String.format("qr-%s.png",response.getOutTradeNo());
+                //path: upload文件夹的真实路径 qrPaht=path/qr-orderNo.png路径下生成二维码
                 ZxingUtils.getQRCodeImge(response.getQrCode(), 256, qrPath);
                 logger.info("filePath:" + qrPath);
 
+                //targetFle路径就是qrPath , 将图片路径为qrPath的图片上传到ftp服务器中
                 File targetFile = new File(path,qrFileName);
                 try {
                     FTPUtil.uploadFile(Lists.newArrayList(targetFile));
@@ -558,7 +560,7 @@ public class OrderServiceImpl implements OrderService {
                 }
                 Map<String, Object> resultMap = new HashMap<>();
                 resultMap.put("orderNo", order.getOrderNo());
-                resultMap.put("qrPath",PropertiesUtil.getProperty("ftp.server.http.prefix") + qrFileName);
+                resultMap.put("qrUrl",PropertiesUtil.getProperty("ftp.server.http.prefix") + qrFileName);
                 return ServerResponse.createBySuccess(resultMap);
 
 
