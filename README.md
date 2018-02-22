@@ -1,9 +1,6 @@
 # 学习项目之小商城 2.0-version
 
-### 1. 接口文档
-[https://gitee.com/imooccode/happymmallwiki/wikis/Home](https://gitee.com/imooccode/happymmallwiki/wikis/Home)
-
-### 2. 所用技术
+### 1. 所用技术
 主流框架: Springmvc + Spring + Mybatis <br/>
 构建工具: maven <br/>
 文件服务: vsftpd <br/>
@@ -12,7 +9,7 @@
 日志框架: logback <br/>
 开发平台工具: centos 7.0 + Intellij Idea <br/>
 
-### 3. 改进
+### 2. 改进
 与1.0版本比较主要有以下几点变化<br/>
 1.**演进为tomcat集群, 使用nginx配置负载均衡**.<br/> 
 带来的问题是用户维持登录状态出现问题, sessionId失效, 因为用户访问不同的tomcat时sessionId不同, 就会出现有时是登录状态，有时是
