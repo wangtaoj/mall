@@ -13,8 +13,7 @@ public class MD5Util {
 
     public static String md5(String password) {
         try {
-            String md5 = DigestUtils.md5DigestAsHex((password + Consts.SALT).getBytes("UTF-8"));
-            return md5;
+            return DigestUtils.md5DigestAsHex((password + Consts.SALT).getBytes("UTF-8"));
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }

@@ -20,4 +20,10 @@ public class ShardedRedisUtilTest {
         System.out.println(ShardedRedisUtil.get("key-2"));
     }
 
+    @Test
+    public void testSet() {
+        String value = ShardedRedisUtil.set("aa", "bb", 30);
+        System.out.println(value);
+    }
+
 }

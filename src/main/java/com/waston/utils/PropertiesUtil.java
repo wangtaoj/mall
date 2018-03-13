@@ -27,6 +27,11 @@ public class PropertiesUtil {
         }
     }
 
+    /**
+     * 获取属性值, 会去掉前后多余的空格
+     * @param key
+     * @return
+     */
     public static String getProperty(String key) {
         String value =  properties.getProperty(key.trim());
         if(StringUtils.isEmpty(value))
@@ -34,6 +39,12 @@ public class PropertiesUtil {
         return value.trim();
     }
 
+    /**
+     * 获取属性值, 会去掉前后多余的空格, 如果没有此属性返回默认值
+     * @param key
+     * @param defaultValue
+     * @return
+     */
     public static String getProperty(String key, String defaultValue) {
         String value =  properties.getProperty(key.trim());
         if(StringUtils.isEmpty(value))

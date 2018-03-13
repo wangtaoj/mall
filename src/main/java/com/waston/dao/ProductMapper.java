@@ -47,4 +47,12 @@ public interface ProductMapper {
      */
     List<Product> selectByNameOrCategoryIds(@Param("productName")String productName, @Param("categories")List<Integer> categories);
 
+    /**
+     * 减库存
+     * @param productId
+     * @param number
+     * @return
+     */
+    int reduceStock(@Param("productId")Integer productId, @Param("number")int number);
+
 }

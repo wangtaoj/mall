@@ -37,6 +37,7 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @Author wangtao
@@ -81,6 +82,25 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private ShippingMapper shippingMapper;
 
+    /**
+     * 用于测试高并发情况下减库存是否会出现超卖
+     * 需要支持事务, 以update开头
+     */
+    public void updateTestReduceStock(AtomicInteger i, AtomicInteger j) {
+        //模拟一个订单明细, 针对id为6的商品
+        List<OrderItem> orderItems = new ArrayList<>();
+        OrderItem orderItem = new OrderItem();
+        orderItem.setProductId(6);
+        orderItem.setQuantity(1);
+        orderItems.add(orderItem);
+        ServerResponse response = reduceProductStock(orderItems);
+        if(response.isSuccess()) {
+            i.incrementAndGet(); //成功
+        } else {
+            j.incrementAndGet(); //失败
+        }
+    }
+
     @Override
     public ServerResponse addOrder(Integer userId, Integer shippingId) {
         if(shippingId == null) {
@@ -98,6 +118,10 @@ public class OrderServiceImpl implements OrderService {
         //计算订单总价
         BigDecimal payment = calPayment(orderItems);
 
+        //减库存操作, 如果失败, 说明至少有一个商品库存不足, 添加订单失败.
+        ServerResponse checkStock = reduceProductStock(orderItems);
+        if(!checkStock.isSuccess())
+            return checkStock;
         //插入订单
         Order order = new Order();
         order.setOrderNo(orderNo);
@@ -115,10 +139,6 @@ public class OrderServiceImpl implements OrderService {
         }
         //批量插入订单明细
         orderItemMapper.insertBatch(orderItems);
-
-        //减少库存
-        reduceProductStock(orderItems);
-
         //清空购物车
         cleanCart(carts);
         //组装返回数据
@@ -151,6 +171,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public ServerResponse listOrder(Integer pageNum, Integer pageSize, Integer userId) {
         PageHelper.startPage(pageNum, pageSize);
         List<Order> orders = orderMapper.selectByUserId(userId);
@@ -227,6 +248,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public ServerResponse listOrderByManage(int pageNum, int pageSize) {
         PageHelper.startPage(pageNum, pageSize);
         List<Order> orders = orderMapper.selectAll();
@@ -256,6 +278,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public ServerResponse<PageInfo> search(int pageNum,int pageSize, Long orderNo){
         PageHelper.startPage(pageNum,pageSize);
         Order order = orderMapper.selectByOrderNo(orderNo);
@@ -344,15 +367,18 @@ public class OrderServiceImpl implements OrderService {
      * 创建订单时, 减少商品库存
      * @param orderItems
      */
-    private void reduceProductStock(List<OrderItem> orderItems){
+    private ServerResponse reduceProductStock(List<OrderItem> orderItems){
         for(OrderItem orderItem : orderItems){
             Product product = productMapper.selectByPrimaryKey(orderItem.getProductId());
             if(product == null)
                 continue;
-            product.setStock(product.getStock()-orderItem.getQuantity());
-            product.setUpdateTime(new Date());
-            productMapper.updateByPrimaryKeySelective(product);
+            if(product.getStock() < orderItem.getQuantity())
+                return ServerResponse.createByError(product.getName() + "库存不足, 无法下单");
+            int res = productMapper.reduceStock(orderItem.getProductId(), orderItem.getQuantity());
+            if(res <= 0)
+                return ServerResponse.createByError(product.getName() + "库存不足, 无法下单");
         }
+        return ServerResponse.createBySuccess();
     }
 
     /**

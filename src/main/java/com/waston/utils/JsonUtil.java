@@ -88,7 +88,7 @@ public class JsonUtil {
 		try {
 			return objectMapper.readValue(json, javaType);
 		} catch (IOException e) {
-			logger.error("parse json to object error", e);
+			logger.error("parse json to list error", e);
 		}
 		return null;
 	}
@@ -106,7 +106,7 @@ public class JsonUtil {
 		try {
 			return objectMapper.readValue(json, javaType);
 		} catch (IOException e) {
-			logger.error("parse json to object error", e);
+			logger.error("parse json to set error", e);
 		}
 		return null;
 	}
@@ -125,7 +125,7 @@ public class JsonUtil {
 		try {
 			return objectMapper.readValue(json, javaType);
 		} catch (IOException e) {
-			logger.error("parse json to object error", e);
+			logger.error("parse json to map error", e);
 		}
 		return null;
 	}

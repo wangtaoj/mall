@@ -3,6 +3,7 @@ package com.waston.service;
 import com.waston.common.ServerResponse;
 
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @Author wangtao
@@ -108,4 +109,11 @@ public interface OrderService {
      * @return
      */
     ServerResponse search(int pageNum, int pageSize, Long orderNo);
+
+    /**
+     * 测试减库存, 需要用到事务, 才放到此处
+     * @param i
+     * @param j
+     */
+    void updateTestReduceStock(AtomicInteger i, AtomicInteger j);
 }

@@ -221,4 +221,10 @@
         </if>
     </select>
 
+    <update id="reduceStock" parameterType="map">
+        UPDATE mmall_product
+        SET stock = stock - #{number}, update_time = NOW()
+        WHERE id = #{productId} AND stock >= #{number}
+    </update>
+
 </mapper>

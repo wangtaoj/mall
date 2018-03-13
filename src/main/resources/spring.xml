@@ -22,8 +22,6 @@
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
 
-    <context:property-placeholder location="classpath:db.properties" file-encoding="UTF-8"/>
-
     <!--开启任务注解驱动 -->
     <task:annotation-driven/>
 

@@ -14,6 +14,9 @@ public class ShardedRedisUtil {
 
     private static final Logger logger = LoggerFactory.getLogger(ShardedRedisUtil.class);
 
+    private static final String SET_IF_NOT_EXIST = "NX";
+    private static final String SET_WITH_EXPIRE_TIME = "EX";
+
     /**
      * 设置key的有效期，单位是秒
      * @param key
@@ -60,7 +63,7 @@ public class ShardedRedisUtil {
      * 添加key, value
      * @param key
      * @param value
-     * @return
+     * @return if success return "OK"
      */
     public static String set(String key,String value){
         ShardedJedis jedis = null;
@@ -68,6 +71,27 @@ public class ShardedRedisUtil {
         try {
             jedis = ShardedRedisPool.getJedis();
             result = jedis.set(key,value);
+            ShardedRedisPool.returnResource(jedis);
+        } catch (Exception e) {
+            logger.error("set key:{} value:{} error",key,value,e);
+            ShardedRedisPool.returnBrokenResource(jedis);
+        }
+        return result;
+    }
+
+    /**
+     * 如果存在不设置, 否则设置(key, value)
+     * @param key
+     * @param value
+     * @param expireTime 过期时间, 单位为秒
+     * @return if success return "OK"
+     */
+    public static String set(String key, String value, int expireTime) {
+        ShardedJedis jedis = null;
+        String result = null;
+        try {
+            jedis = ShardedRedisPool.getJedis();
+            result = jedis.set(key,value, SET_IF_NOT_EXIST, SET_WITH_EXPIRE_TIME, expireTime);
             ShardedRedisPool.returnResource(jedis);
         } catch (Exception e) {
             logger.error("set key:{} value:{} error",key,value,e);
