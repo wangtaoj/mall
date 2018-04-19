@@ -18,15 +18,15 @@
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
         select
         <include refid="Base_Column_List"/>
-        from mmall_pay_info
+        from pay_info
         where id = #{id,jdbcType=INTEGER}
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-        DELETE FROM mmall_pay_info
+        DELETE FROM pay_info
         WHERE id = #{id,jdbcType=INTEGER}
     </delete>
     <insert id="insert" parameterType="com.waston.pojo.PayInfo">
-        INSERT INTO mmall_pay_info (id, user_id, order_no,
+        INSERT INTO pay_info (id, user_id, order_no,
                                     pay_platform, platform_number, platform_status,
                                     create_time, update_time)
         VALUES (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{orderNo,jdbcType=BIGINT},
@@ -34,7 +34,7 @@
                 #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
     </insert>
     <insert id="insertSelective" parameterType="com.waston.pojo.PayInfo">
-        insert into mmall_pay_info
+        insert into pay_info
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
                 id,
@@ -89,7 +89,7 @@
         </trim>
     </insert>
     <update id="updateByPrimaryKeySelective" parameterType="com.waston.pojo.PayInfo">
-        update mmall_pay_info
+        update pay_info
         <set>
             <if test="userId != null">
                 user_id = #{userId,jdbcType=INTEGER},
@@ -116,7 +116,7 @@
         where id = #{id,jdbcType=INTEGER}
     </update>
     <update id="updateByPrimaryKey" parameterType="com.waston.pojo.PayInfo">
-        UPDATE mmall_pay_info
+        UPDATE pay_info
         SET user_id         = #{userId,jdbcType=INTEGER},
             order_no        = #{orderNo,jdbcType=BIGINT},
             pay_platform    = #{payPlatform,jdbcType=INTEGER},

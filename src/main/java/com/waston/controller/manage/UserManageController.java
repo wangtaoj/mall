@@ -56,7 +56,7 @@ public class UserManageController {
     @RequestMapping(value = "/list.do", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
     @ResponseBody
     public ServerResponse listUsers(@RequestParam(value = "pageNum", defaultValue = "1")int pageNum,
-                                    @RequestParam(value = "pageNum", defaultValue = "10")int pageSize,
+                                    @RequestParam(value = "pageSize", defaultValue = "10")int pageSize,
                                     HttpSession session) {
         User currentUser = (User)session.getAttribute(Consts.CURRENT_USER);
         if(currentUser == null)

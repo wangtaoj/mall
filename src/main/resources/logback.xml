@@ -10,49 +10,12 @@
         </filter>
     </appender>
 
-    <appender name="mall" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <File>/usr/local/developer/tomcat/logs/mall.log</File>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>/usr/local/developer/tomcat/logs/mall.log.%d{yyyy-MM-dd}.gz</fileNamePattern>
-            <append>true</append>
-            <maxHistory>10</maxHistory>
-        </rollingPolicy>
-        <encoder>
-            <pattern>[%d{HH:mm:ss.SSS}][%p][%c{40}][%t] %m%n</pattern>
-        </encoder>
-    </appender>
-
-
-    <appender name="error" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <File>/usr/local/developer/tomcat/logs/error.log</File>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>/usr/local/developer/tomcat/logs/error.log.%d{yyyy-MM-dd}.gz</fileNamePattern>
-            <append>true</append>
-            <maxHistory>10</maxHistory>
-        </rollingPolicy>
-        <encoder>
-            <pattern>[%d{HH:mm:ss.SSS}][%p][%c{40}][%t] %m%n</pattern>
-        </encoder>
-        <filter class="ch.qos.logback.classic.filter.LevelFilter">
-            <level>ERROR</level>
-            <onMatch>ACCEPT</onMatch>
-            <onMismatch>DENY</onMismatch>
-        </filter>
-    </appender>
-
     <logger name="com.waston" additivity="false" level="INFO" >
-        <appender-ref ref="mall" />
         <appender-ref ref="console"/>
     </logger>
-
-
-
-    <!-- mybatis log 日志 -->
     <logger name="com.waston.dao" level="DEBUG"/>
-
-    <root level="DEBUG">
+    <root level="debug">
         <appender-ref ref="console"/>
-        <appender-ref ref="error"/>
     </root>
 
 </configuration>

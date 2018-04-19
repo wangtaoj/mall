@@ -19,24 +19,24 @@
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
         select
         <include refid="Base_Column_List"/>
-        from mmall_user
+        from user
         where id = #{id,jdbcType=INTEGER}
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-        DELETE FROM mmall_user
+        DELETE FROM user
         WHERE id = #{id,jdbcType=INTEGER}
     </delete>
     <insert id="insert" parameterType="com.waston.pojo.User">
-        INSERT INTO mmall_user (id, username, password,
-                                email, phone, question,
-                                answer, role, create_time,
-                                update_time)
+        INSERT INTO user (id, username, password,
+                          email, phone, question,
+                          answer, role, create_time,
+                          update_time)
         VALUES (#{id,jdbcType=INTEGER}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR},
                 #{email,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{question,jdbcType=VARCHAR},
                 #{answer,jdbcType=VARCHAR}, #{role,jdbcType=INTEGER}, now(), now())
     </insert>
     <insert id="insertSelective" parameterType="com.waston.pojo.User">
-        insert into mmall_user
+        insert into user
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
                 id,
@@ -103,7 +103,7 @@
         </trim>
     </insert>
     <update id="updateByPrimaryKeySelective" parameterType="com.waston.pojo.User">
-        update mmall_user
+        update user
         <set>
             <if test="username != null">
                 username = #{username,jdbcType=VARCHAR},
@@ -136,7 +136,7 @@
         where id = #{id,jdbcType=INTEGER}
     </update>
     <update id="updateByPrimaryKey" parameterType="com.waston.pojo.User">
-        UPDATE mmall_user
+        UPDATE user
         SET username    = #{username,jdbcType=VARCHAR},
             password    = #{password,jdbcType=VARCHAR},
             email       = #{email,jdbcType=VARCHAR},
@@ -151,57 +151,64 @@
 
     <select id="checkUsername" resultType="int">
         SELECT COUNT(*)
-        FROM mmall_user
+        FROM user
         WHERE username = #{username}
     </select>
 
     <select id="checkEmail" resultType="int">
         SELECT COUNT(*)
-        FROM mmall_user
+        FROM user
         WHERE email = #{email}
     </select>
 
     <select id="selectByUsernameAndPassword" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from mmall_user
+        from user
         where username = #{username} AND password = #{password}
     </select>
 
     <select id="selectQuestionByUsername" resultType="string">
         SELECT question
-        FROM mmall_user
+        FROM user
         WHERE username = #{username}
     </select>
 
     <select id="checkAnswer" resultType="int">
         SELECT COUNT(*)
-        FROM mmall_user
+        FROM user
         WHERE username = #{username} AND question = #{question} AND answer = #{answer}
     </select>
 
     <update id="updatePassword">
-        UPDATE mmall_user
+        UPDATE user
         SET password = #{passwordNew}, update_time = now()
         WHERE username = #{username}
     </update>
 
     <select id="checkPassword" resultType="int">
         SELECT COUNT(*)
-        FROM mmall_user
+        FROM user
         WHERE username = #{username}
               AND password = #{passwordOld}
     </select>
 
     <select id="checkEmailById" resultType="int">
         SELECT COUNT(*)
-        FROM mmall_user
+        FROM user
         WHERE email = #{email}
               AND id != #{id}
     </select>
 
     <select id="selectByPage" resultMap="BaseResultMap">
-        SELECT <include refid="Base_Column_List"/>
-        FROM mmall_user
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM user
+    </select>
+
+    <select id="checkPhone" resultType="int">
+        SELECT COUNT(*)
+        FROM user
+        WHERE phone = #{phone}
     </select>
 </mapper>
