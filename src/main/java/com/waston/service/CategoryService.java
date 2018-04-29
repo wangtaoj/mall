@@ -28,6 +28,13 @@ public interface CategoryService {
     ServerResponse<String> updateCategory(Integer categoryId, String categoryName);
 
     /**
+     * 删除分类
+     * @param categoryId
+     * @return
+     */
+    ServerResponse removeCategory(Integer categoryId);
+
+    /**
      * 获取子分类, 平级
      * @param categoryId
      * @return

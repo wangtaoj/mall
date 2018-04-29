@@ -90,7 +90,7 @@ public class ProductManageController {
      */
     @RequestMapping(value = "/list.do", produces = "application/json;charset=utf-8")
     @ResponseBody
-    public ServerResponse listProduct(@RequestParam(value = "pageNum",defaultValue = "1")int pageNum, @RequestParam(value = "pageSize",defaultValue = "10")int pageSize, HttpSession session){
+    public ServerResponse listProduct(@RequestParam(value = "pageNum",defaultValue = "1")int pageNum, @RequestParam(value = "pageSize",defaultValue = "8")int pageSize, HttpSession session){
         ServerResponse<String> response = check(session);
         if(response != null)
             return response;

@@ -55,6 +55,22 @@ public class CategoryManageController {
         return categoryService.updateCategory(categoryId, categoryName);
     }
 
+
+    /**
+     * 删除分类
+     * @param categoryId
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = "/remove.do", produces = "application/json;chaset=utf-8")
+    @ResponseBody
+    public ServerResponse removeCategory(Integer categoryId, HttpSession session) {
+        ServerResponse<String> response = check(session);
+        if (response != null)
+            return response;
+        return categoryService.removeCategory(categoryId);
+    }
+
     /**
      * 获取子分类, 不递归进去, 只查找平级的子分类
      * @param categoryId
@@ -71,6 +87,12 @@ public class CategoryManageController {
         return categoryService.selectListByCategoryId(categoryId);
     }
 
+    /**
+     * 获取子分类, 并且递归进去
+     * @param categoryId
+     * @param session
+     * @return
+     */
     @RequestMapping(value = "/get_deep_category.do", produces = "application/json;chaset=utf-8")
     @ResponseBody
     public ServerResponse getAllCategory(@RequestParam(value = "categoryId", defaultValue = "0") Integer categoryId

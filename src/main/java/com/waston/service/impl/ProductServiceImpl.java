@@ -42,14 +42,17 @@ public class ProductServiceImpl implements ProductService {
             //sumImages存取多个图片地址,用逗号分隔
             if(!StringUtils.isEmpty(product.getSubImages())) {
                 String[] res = product.getSubImages().split(",");
-                if(res.length > 0)
+                if(res.length > 0) {
+                    //主图
                     product.setMainImage(res[0]);
+                }
             }
             Date date = new Date();
             product.setUpdateTime(date);
             //新增
             if(product.getId() == null) {
                 product.setCreateTime(date);
+                product.setStatus(1);
                 if(productMapper.insert(product) > 0)
                     return ServerResponse.createBySuccessMsg("新增商品成功!");
                 return ServerResponse.createByError("新增商品失败");
@@ -86,10 +89,13 @@ public class ProductServiceImpl implements ProductService {
             return ServerResponse.createByError("该商品不存在");
         Category category = categoryMapper.selectByPrimaryKey(product.getCategoryId());
         Integer categoryParentId = 0;//根节点
-        if(category != null)
+        String categoryName = "该商品没有分类, 野生??";
+        if(category != null) {
             categoryParentId = category.getParentId();
+            categoryName = category.getName();
+        }
         //封装商品详情返回
-        ProductDetailVo productDetailVo = ProductDetailVo.buildProductDetailVo(product, categoryParentId);
+        ProductDetailVo productDetailVo = ProductDetailVo.buildProductDetailVo(product, categoryParentId, categoryName);
         return ServerResponse.createBySuccess(productDetailVo);
     }
 

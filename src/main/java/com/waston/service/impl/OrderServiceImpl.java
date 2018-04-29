@@ -149,6 +149,7 @@ public class OrderServiceImpl implements OrderService {
         return ServerResponse.createBySuccess(orderProductVo);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public ServerResponse listOrder(Integer pageNum, Integer pageSize, Integer userId) {
         PageHelper.startPage(pageNum, pageSize);
@@ -224,9 +225,10 @@ public class OrderServiceImpl implements OrderService {
     }
 
     //manage
+    @SuppressWarnings("unchecked")
     @Override
     public ServerResponse listOrderByManage(int pageNum, int pageSize) {
-        PageHelper.startPage(pageNum, pageSize);
+        PageHelper.startPage(pageNum, pageSize, "create_time desc");
         List<Order> orders = orderMapper.selectAll();
         List<OrderVo> orderVos = new ArrayList<>();
         for(Order order : orders) {
@@ -253,19 +255,23 @@ public class OrderServiceImpl implements OrderService {
         return ServerResponse.createBySuccess(orderVo);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public ServerResponse<PageInfo> search(int pageNum,int pageSize, Long orderNo){
-        PageHelper.startPage(pageNum,pageSize);
-        Order order = orderMapper.selectByOrderNo(orderNo);
-        if(order != null){
-            List<OrderItem> orderItemList = orderItemMapper.selectListByOrderNo(orderNo);
-            OrderVo orderVo = buildOrderVo(order,orderItemList);
-
-            PageInfo pageResult = new PageInfo<>(Lists.newArrayList(order));
-            pageResult.setList(Lists.newArrayList(orderVo));
-            return ServerResponse.createBySuccess(pageResult);
+        PageHelper.startPage(pageNum,pageSize, "create_time desc");
+        List<Order> orders = orderMapper.selectAllByOrderNo("%" + orderNo + "%");
+        if(orders == null || orders.isEmpty()) {
+            return ServerResponse.createByError("没有搜索到订单");
         }
-        return ServerResponse.createByError("订单不存在");
+        PageInfo pageResult = new PageInfo<>(orders);
+        List<OrderVo> orderVos = new ArrayList<>();
+        for(Order order : orders){
+            List<OrderItem> orderItemList = orderItemMapper.selectListByOrderNo(order.getOrderNo());
+            OrderVo orderVo = buildOrderVo(order,orderItemList);
+            orderVos.add(orderVo);
+        }
+        pageResult.setList(orderVos);
+        return ServerResponse.createBySuccess(pageResult);
     }
 
     /**

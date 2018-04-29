@@ -118,13 +118,13 @@
     <select id="isExist" resultType="int">
         SELECT COUNT(*)
         FROM category
-        WHERE id = #{id}
+        WHERE id = #{id} AND status = 1
     </select>
 
     <select id="selectListByCategoryId" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
         FROM category
-        WHERE parent_id = #{parentId}
+        WHERE parent_id = #{parentId} AND status = 1
     </select>
 </mapper>

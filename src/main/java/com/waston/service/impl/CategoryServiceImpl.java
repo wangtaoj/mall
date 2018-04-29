@@ -56,6 +56,31 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    public ServerResponse removeCategory(Integer categoryId) {
+        if(categoryId == null)
+            return ServerResponse.createByError("参数错误");
+        Category category = categoryMapper.selectByPrimaryKey(categoryId);
+        if(category == null)
+            return ServerResponse.createByError("该分类不存在");
+        category.setId(categoryId);
+        category.setStatus(false);
+        Date date = new Date();
+        category.setUpdateTime(date);
+        if(categoryMapper.updateByPrimaryKeySelective(category) > 0) {
+            List<Category> categories = categoryMapper.selectListByCategoryId(categoryId);
+            for(Category child : categories) {
+                Category c = new Category();
+                c.setId(child.getId());
+                c.setStatus(false);
+                c.setUpdateTime(date);
+                categoryMapper.updateByPrimaryKeySelective(c);
+            }
+            return ServerResponse.createBySuccessMsg("该分类以及子分类都已被删除");
+        }
+        return ServerResponse.createByError("删除分类失败, 服务器内部错误!");
+    }
+
+    @Override
     public ServerResponse<List<Category>> selectListByCategoryId(Integer categoryId) {
         List<Category> categories = categoryMapper.selectListByCategoryId(categoryId);
         if(categories == null || categories.isEmpty())

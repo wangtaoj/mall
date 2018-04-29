@@ -14,6 +14,7 @@ public class ProductDetailVo {
 
     private Integer  id;
     private Integer categoryId;
+    private String categoryName;
     private String name;
     private String subtitle;
     private String mainImage;
@@ -32,7 +33,7 @@ public class ProductDetailVo {
      * @param product
      * @return
      */
-    public static ProductDetailVo buildProductDetailVo(Product product, Integer categoryParentId){
+    public static ProductDetailVo buildProductDetailVo(Product product, Integer categoryParentId, String categoryName){
         ProductDetailVo productDetailVo = new ProductDetailVo();
         productDetailVo.setId(product.getId());
         productDetailVo.setSubtitle(product.getSubtitle());
@@ -46,6 +47,7 @@ public class ProductDetailVo {
         productDetailVo.setStock(product.getStock());
         productDetailVo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix"));
         productDetailVo.setParentCategoryId(categoryParentId);
+        productDetailVo.setCategoryName(categoryName);
         productDetailVo.setCreateTime(DateUtil.toString(product.getCreateTime()));
         productDetailVo.setUpdateTime(DateUtil.toString(product.getUpdateTime()));
         return productDetailVo;
@@ -66,6 +68,14 @@ public class ProductDetailVo {
 
     public void setCategoryId(Integer categoryId) {
         this.categoryId = categoryId;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
     }
 
     public String getName() {

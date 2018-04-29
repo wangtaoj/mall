@@ -45,4 +45,11 @@ public interface OrderMapper {
      * @return
      */
     List<Order> selectAll();
+
+    /**
+     * 根据订单号进行模糊查询
+     * @param orderNo
+     * @return
+     */
+    List<Order> selectAllByOrderNo(String orderNo);
 }
