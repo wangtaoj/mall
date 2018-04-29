@@ -22,15 +22,15 @@
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
         select
         <include refid="Base_Column_List"/>
-        from mmall_product
+        from product
         where id = #{id,jdbcType=INTEGER}
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-        DELETE FROM mmall_product
+        DELETE FROM product
         WHERE id = #{id,jdbcType=INTEGER}
     </delete>
     <insert id="insert" parameterType="com.waston.pojo.Product">
-        INSERT INTO mmall_product (id, category_id, name,
+        INSERT INTO product (id, category_id, name,
                                    subtitle, main_image, sub_images,
                                    detail, price, stock,
                                    status, create_time, update_time
@@ -45,7 +45,7 @@
         )
     </insert>
     <insert id="insertSelective" parameterType="com.waston.pojo.Product">
-        insert into mmall_product
+        insert into product
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
                 id,
@@ -124,7 +124,7 @@
         </trim>
     </insert>
     <update id="updateByPrimaryKeySelective" parameterType="com.waston.pojo.Product">
-        update mmall_product
+        update product
         <set>
             <if test="categoryId != null">
                 category_id = #{categoryId,jdbcType=INTEGER},
@@ -163,7 +163,7 @@
         where id = #{id,jdbcType=INTEGER}
     </update>
     <update id="updateByPrimaryKey" parameterType="com.waston.pojo.Product">
-        UPDATE mmall_product
+        UPDATE product
         SET category_id = #{categoryId,jdbcType=INTEGER},
             name        = #{name,jdbcType=VARCHAR},
             subtitle    = #{subtitle,jdbcType=VARCHAR},
@@ -180,21 +180,21 @@
 
     <select id="isExist" resultType="int">
         SELECT COUNT(*)
-        FROM mmall_product
+        FROM product
         WHERE id = #{productId}
     </select>
 
     <select id="selectByPage" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
-        FROM mmall_product
+        FROM product
         ORDER BY id ASC
     </select>
 
     <select id="selectByNameAndId" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
-        FROM mmall_product
+        FROM product
         <where>
             <if test="productId != null">
                 AND id = #{productId}
@@ -208,7 +208,7 @@
     <select id="selectByNameOrCategoryIds" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
-        FROM mmall_product
+        FROM product
         WHERE status = 1
         <if test="productName != null">
             AND name LIKE #{productName}
@@ -222,7 +222,7 @@
     </select>
 
     <update id="reduceStock" parameterType="map">
-        UPDATE mmall_product
+        UPDATE product
         SET stock = stock - #{number}, update_time = NOW()
         WHERE id = #{productId} AND stock >= #{number}
     </update>

@@ -21,15 +21,15 @@
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
         select
         <include refid="Base_Column_List"/>
-        from mmall_order_item
+        from order_item
         where id = #{id,jdbcType=INTEGER}
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-        DELETE FROM mmall_order_item
+        DELETE FROM order_item
         WHERE id = #{id,jdbcType=INTEGER}
     </delete>
     <insert id="insert" parameterType="com.waston.pojo.OrderItem">
-        INSERT INTO mmall_order_item (id, user_id, order_no,
+        INSERT INTO order_item (id, user_id, order_no,
                                       product_id, product_name, product_image,
                                       current_unit_price, quantity, total_price,
                                       create_time, update_time)
@@ -41,7 +41,7 @@
                                         #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
     </insert>
     <insert id="insertSelective" parameterType="com.waston.pojo.OrderItem">
-        insert into mmall_order_item
+        insert into order_item
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
                 id,
@@ -114,7 +114,7 @@
         </trim>
     </insert>
     <update id="updateByPrimaryKeySelective" parameterType="com.waston.pojo.OrderItem">
-        update mmall_order_item
+        update order_item
         <set>
             <if test="userId != null">
                 user_id = #{userId,jdbcType=INTEGER},
@@ -150,7 +150,7 @@
         where id = #{id,jdbcType=INTEGER}
     </update>
     <update id="updateByPrimaryKey" parameterType="com.waston.pojo.OrderItem">
-        UPDATE mmall_order_item
+        UPDATE order_item
         SET user_id            = #{userId,jdbcType=INTEGER},
             order_no           = #{orderNo,jdbcType=BIGINT},
             product_id         = #{productId,jdbcType=INTEGER},
@@ -167,7 +167,7 @@
     <select id="selectListByOrderNoAndUserId" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
-        FROM mmall_order_item
+        FROM order_item
         WHERE order_no = #{orderNo}
         AND user_id = #{userId}
     </select>
@@ -175,13 +175,13 @@
     <select id="selectListByOrderNo" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
-        FROM mmall_order_item
+        FROM order_item
         WHERE order_no = #{orderNo}
     </select>
 
     <insert id="insertBatch" parameterType="list">
         INSERT INTO
-        mmall_order_item(id, order_no, user_id,product_id, product_name, product_image,current_unit_price, quantity, total_price,create_time, update_time)
+        order_item(id, order_no, user_id,product_id, product_name, product_image,current_unit_price, quantity, total_price,create_time, update_time)
         VALUES
         <foreach collection="orderItems" item="item" separator=",">
             (#{item.id},#{item.orderNo},#{item.userId},#{item.productId},#{item.productName},#{item.productImage},#{item.currentUnitPrice},#{item.quantity},#{item.totalPrice},#{item.createTime},#{item.updateTime})

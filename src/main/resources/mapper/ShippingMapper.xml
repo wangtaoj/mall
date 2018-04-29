@@ -22,15 +22,15 @@
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
         select
         <include refid="Base_Column_List"/>
-        from mmall_shipping
+        from shipping
         where id = #{id,jdbcType=INTEGER}
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-        DELETE FROM mmall_shipping
+        DELETE FROM shipping
         WHERE id = #{id,jdbcType=INTEGER}
     </delete>
     <insert id="insert" parameterType="com.waston.pojo.Shipping" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO mmall_shipping (id, user_id, receiver_name,
+        INSERT INTO shipping (id, user_id, receiver_name,
                                     receiver_phone, receiver_mobile, receiver_province,
                                     receiver_city, receiver_district, receiver_address,
                                     receiver_zip, create_time, update_time
@@ -45,7 +45,7 @@
         )
     </insert>
     <insert id="insertSelective" parameterType="com.waston.pojo.Shipping">
-        insert into mmall_shipping
+        insert into shipping
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
                 id,
@@ -124,7 +124,7 @@
         </trim>
     </insert>
     <update id="updateByPrimaryKeySelective" parameterType="com.waston.pojo.Shipping">
-        update mmall_shipping
+        update shipping
         <set>
             <if test="userId != null">
                 user_id = #{userId,jdbcType=INTEGER},
@@ -163,7 +163,7 @@
         where id = #{id,jdbcType=INTEGER}
     </update>
     <update id="updateByPrimaryKey" parameterType="com.waston.pojo.Shipping">
-        UPDATE mmall_shipping
+        UPDATE shipping
         SET user_id           = #{userId,jdbcType=INTEGER},
             receiver_name     = #{receiverName,jdbcType=VARCHAR},
             receiver_phone    = #{receiverPhone,jdbcType=VARCHAR},
@@ -180,13 +180,13 @@
 
     <delete id="deleteByPrimaryKeyAndUserId">
         DELETE
-        FROM mmall_shipping
+        FROM shipping
         WHERE id = #{id}
         AND user_id = #{userId}
     </delete>
 
     <update id="updateByPrimaryKeyAndUserId" parameterType="com.waston.pojo.Shipping">
-        UPDATE mmall_shipping
+        UPDATE shipping
         SET
             receiver_name     = #{receiverName,jdbcType=VARCHAR},
             receiver_phone    = #{receiverPhone,jdbcType=VARCHAR},
@@ -204,14 +204,14 @@
 
     <select id="selectByPrimaryKeyAndUserId">
         SELECT <include refid="Base_Column_List"/>
-        FROM mmall_shipping
+        FROM shipping
         WHERE id = #{id}
         AND user_id = #{userId}
     </select>
 
     <select id="selectByPage" resultMap="BaseResultMap">
         SELECT <include refid="Base_Column_List"/>
-        FROM mmall_shipping
+        FROM shipping
         WHERE user_id = #{userId}
     </select>
 </mapper>
