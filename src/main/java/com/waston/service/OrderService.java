@@ -102,4 +102,10 @@ public interface OrderService {
      * @return
      */
     ServerResponse search(int pageNum, int pageSize, Long orderNo);
+
+    /**
+     * 自动关单逻辑, 关闭下单(hour)小时后还没支付的订单
+     * @param hour
+     */
+    void updateAndCloseOrder(int hour);
 }

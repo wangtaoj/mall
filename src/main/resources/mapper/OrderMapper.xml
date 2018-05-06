@@ -33,10 +33,10 @@
     </delete>
     <insert id="insert" parameterType="com.waston.pojo.Order">
         INSERT INTO `order` (id, order_no, user_id,
-                                 shipping_id, payment, payment_type,
-                                 postage, status, payment_time,
-                                 send_time, end_time, close_time,
-                                 create_time, update_time)
+                             shipping_id, payment, payment_type,
+                             postage, status, payment_time,
+                             send_time, end_time, close_time,
+                             create_time, update_time)
         VALUES (#{id,jdbcType=INTEGER}, #{orderNo,jdbcType=BIGINT}, #{userId,jdbcType=INTEGER},
                                         #{shippingId,jdbcType=INTEGER}, #{payment,jdbcType=DECIMAL},
                                         #{paymentType,jdbcType=INTEGER},
@@ -234,6 +234,17 @@
         SELECT
         <include refid="Base_Column_List"/>
         FROM `order`
+    </select>
+
+    <select id="selectNeedCloseOrder" resultMap="BaseResultMap" parameterType="map">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM `order`
+        WHERE status = #{status}
+        <![CDATA[
+        AND create_time <= #{time}
+        ]]>
+        ORDER BY create_time DESC
     </select>
 
 </mapper>

@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /*
@@ -84,6 +85,13 @@ public class FTPUtil {
         return result;
     }
 
+    /**
+     * 上传多个文件
+     * @param remoteDir 远程目录
+     * @param fileList 本地文件list
+     * @return
+     * @throws IOException
+     */
     public static boolean uploadFile(String remoteDir, List<File> fileList) throws IOException{
         logger.info("开始上传文件");
         boolean result = upload(remoteDir, fileList);
@@ -92,9 +100,25 @@ public class FTPUtil {
     }
 
     /**
-     * 上传文件到指定目录
+     * 上传单个文件
+     * @param remoteDir 远程目录
+     * @param file 本地文件
+     * @return
+     * @throws IOException
+     */
+    public static boolean uploadFile(String remoteDir, File file) throws IOException{
+        logger.info("开始上传文件");
+        List<File> fileList = new ArrayList<>();
+        fileList.add(file);
+        boolean result = upload(remoteDir, fileList);
+        logger.info("结束上传,上传结果:{}", result);
+        return result;
+    }
+
+    /**
+     * 上传文件到文件服务器的指定目录
      * @param remoteDir 远程服务端目录(可以是多级目录), 处于根目录下 如myImages/ftp
-     * @param fileList
+     * @param fileList 本地文件的file集合
      * @return
      * @throws IOException
      */

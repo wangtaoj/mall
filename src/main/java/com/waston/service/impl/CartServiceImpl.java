@@ -9,6 +9,7 @@ import com.waston.pojo.Cart;
 import com.waston.pojo.Product;
 import com.waston.service.CartService;
 import com.waston.utils.BigDecimalUtil;
+import com.waston.utils.PropertiesUtil;
 import com.waston.vo.CartProductVo;
 import com.waston.vo.CartVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,8 +38,13 @@ public class CartServiceImpl implements CartService {
     @Override
     public ServerResponse addCart(Integer productId, Integer count, Integer userId) {
         //检查参数
-        if(productId == null || count == null)
+        if(productId == null || count == null || count <= 0)
             return ServerResponse.createByError("参数错误");
+        Product product = productMapper.selectByPrimaryKey(productId);
+        if(product == null)
+            return ServerResponse.createByError("该商品不存在");
+        if(product.getStock() < count)
+            return ServerResponse.createByError("商品库存不足");
         //先查询是否有该记录
         Cart cart = cartMapper.selectByProductIdAndUserId(productId, userId);
         if(cart == null) {
@@ -71,6 +77,13 @@ public class CartServiceImpl implements CartService {
         //检查参数
         if(productId == null || count == null)
             return ServerResponse.createByError("参数错误");
+        Product product = productMapper.selectByPrimaryKey(productId);
+        if(product == null) {
+            return ServerResponse.createByError("此商品不存在");
+        }
+        if(product.getStock() < count) {
+            return ServerResponse.createByError("库存不足");
+        }
         Cart cart = cartMapper.selectByProductIdAndUserId(productId, userId);
         if(cart == null) {
             return ServerResponse.createByError("该购物车记录不存在");
@@ -197,6 +210,7 @@ public class CartServiceImpl implements CartService {
         cartVo.setCartProductVoList(cartProductVoList);
         cartVo.setAllChecked(cartMapper.selectAllChecked(userId) == 0);
         cartVo.setCartTotalPrice(cartTotalPrice);
+        cartVo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix"));
         return cartVo;
     }
 }

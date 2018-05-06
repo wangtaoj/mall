@@ -1,6 +1,7 @@
 package com.waston.service.impl;
 
 import com.waston.service.FileService;
+import com.waston.utils.FTPUtil;
 import com.waston.utils.NameUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +21,7 @@ public class FileServiceImpl implements FileService {
 
     private Logger logger = LoggerFactory.getLogger(FileServiceImpl.class);
 
-    /*
+
     @Override
     public String uploadFile(MultipartFile multipartFile, String path) {
         String oldName = multipartFile.getOriginalFilename();
@@ -41,7 +42,7 @@ public class FileServiceImpl implements FileService {
         try {
             //先上传到服务器上, 再从服务器把文件上传到FTP服务器中
             multipartFile.transferTo(file);
-            if(FTPUtil.uploadFile(dir, Arrays.asList(file))) {
+            if(FTPUtil.uploadFile(dir, file)) {
                 logger.info("文件上传成功");
                 file.delete();
                 return dir + "/" + newName;
@@ -52,8 +53,9 @@ public class FileServiceImpl implements FileService {
             logger.error("文件上传失败:", e);
             return "null"; //上传失败标志
         }
-    }*/
+    }
 
+    /*
     @Override
     public String uploadFile(MultipartFile multipartFile, String path) {
         String oldName = multipartFile.getOriginalFilename();
@@ -78,5 +80,5 @@ public class FileServiceImpl implements FileService {
             logger.error("文件上传失败:", e);
             return "null"; //上传失败标志
         }
-    }
+    }*/
 }

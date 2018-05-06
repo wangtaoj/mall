@@ -27,6 +27,7 @@ import com.waston.vo.OrderProductVo;
 import com.waston.vo.OrderVo;
 import com.waston.vo.ShippingVo;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,6 +98,10 @@ public class OrderServiceImpl implements OrderService {
         //计算订单总价
         BigDecimal payment = calPayment(orderItems);
 
+        //减库存操作, 如果失败, 说明至少有一个商品库存不足, 添加订单失败.
+        ServerResponse checkStock = reduceProductStock(orderItems);
+        if(!checkStock.isSuccess())
+            return checkStock;
         //插入订单
         Order order = new Order();
         order.setOrderNo(orderNo);
@@ -114,10 +119,6 @@ public class OrderServiceImpl implements OrderService {
         }
         //批量插入订单明细
         orderItemMapper.insertBatch(orderItems);
-
-        //减少库存
-        reduceProductStock(orderItems);
-
         //清空购物车
         cleanCart(carts);
         //组装返回数据
@@ -180,6 +181,21 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public void updateAndCloseOrder(int hour) {
+        //查询在下单一个小时还未支付的订单
+        Date time = DateUtils.addHours(new Date(), -1 * hour);
+        List<Order> orders = orderMapper.selectNeedCloseOrder(Consts.OrderStatusEnum.NO_PAY.getCode(), DateUtil.toString(time));
+        for(Order order : orders) {
+            List<OrderItem> orderItems = orderItemMapper.selectListByOrderNo(order.getOrderNo());
+            //将商品库存恢复
+            addProductStock(orderItems);
+            order.setStatus(Consts.OrderStatusEnum.CANCELED.getCode());
+            order.setUpdateTime(new Date());
+            orderMapper.updateByPrimaryKeySelective(order);
+        }
+    }
+
+    @Override
     public ServerResponse updateOrderStatus(Long orderNo, Integer userId) {
         if(orderNo == null) {
             return ServerResponse.createByError("参数错误, 请选择一个订单");
@@ -219,7 +235,7 @@ public class OrderServiceImpl implements OrderService {
         newOrder.setStatus(Consts.OrderStatusEnum.SHIPPED.getCode());
         newOrder.setUpdateTime(new Date());
         if(orderMapper.updateByPrimaryKeySelective(newOrder) > 0) {
-            return ServerResponse.createBySuccessMsg("设置订单发货成功");
+            return ServerResponse.createBySuccessMsg("已发货");
         }
         return ServerResponse.createByError("设置订单发货失败");
     }
@@ -333,14 +349,19 @@ public class OrderServiceImpl implements OrderService {
      * 创建订单时, 减少商品库存
      * @param orderItems
      */
-    private void reduceProductStock(List<OrderItem> orderItems){
+    private ServerResponse reduceProductStock(List<OrderItem> orderItems){
         for(OrderItem orderItem : orderItems){
             Product product = productMapper.selectByPrimaryKey(orderItem.getProductId());
-            product.setStock(product.getStock()-orderItem.getQuantity());
-            productMapper.updateByPrimaryKeySelective(product);
+            if(product == null)
+                continue;
+            if(product.getStock() < orderItem.getQuantity())
+                return ServerResponse.createByError(product.getName() + "库存不足, 无法下单");
+            int res = productMapper.reduceStock(orderItem.getProductId(), orderItem.getQuantity());
+            if(res <= 0)
+                return ServerResponse.createByError(product.getName() + "库存不足, 无法下单");
         }
+        return ServerResponse.createBySuccess();
     }
-
     /**
      * 取消订单时, 恢复商品库存
      * @param orderItems
@@ -452,7 +473,7 @@ public class OrderServiceImpl implements OrderService {
 
 
         // (必填) 订单标题，粗略描述用户的支付目的。如“xxx品牌xxx门店当面付扫码消费”
-        String subject = "happymmall扫码支付,订单号:" + outTradeNo;
+        String subject = "商城扫码支付,订单号:" + outTradeNo;
 
 
         // (必填) 订单总金额，单位为元，不能超过1亿元

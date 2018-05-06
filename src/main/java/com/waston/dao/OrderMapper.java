@@ -52,4 +52,12 @@ public interface OrderMapper {
      * @return
      */
     List<Order> selectAllByOrderNo(String orderNo);
+
+    /**
+     * 关单操作查看需要关单的订单集合
+     * @param status
+     * @param time
+     * @return
+     */
+    List<Order> selectNeedCloseOrder(@Param("status")Integer status, @Param("time")String time);
 }

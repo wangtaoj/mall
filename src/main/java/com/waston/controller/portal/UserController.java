@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
 import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * @author wangtao
@@ -83,14 +85,16 @@ public class UserController {
      * @param session
      * @return
      */
-    @RequestMapping(value = "/get_user_info.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @RequestMapping(value = "/get_username.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     @ResponseBody
-    public ServerResponse<User> getUserInfo(HttpSession session) {
+    public ServerResponse getUserInfo(HttpSession session) {
         User user = (User)session.getAttribute(Consts.CURRENT_USER);
         if(user == null) {
             return ServerResponse.createByError("用户未登录,无法获取当前用户信息");
         }
-        return ServerResponse.createBySuccess(user);
+        Map<String, String> map = new LinkedHashMap<>();
+        map.put("username", user.getUsername());
+        return ServerResponse.createBySuccess(map);
     }
 
     /**
