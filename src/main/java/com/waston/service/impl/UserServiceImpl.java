@@ -166,4 +166,14 @@ public class UserServiceImpl implements UserService{
         return ServerResponse.createBySuccess(pageResult);
     }
 
+    @Override
+    public ServerResponse removeUser(Integer id) {
+        if(id == null) {
+            return ServerResponse.createByError("参数错误!");
+        }
+        if(userMapper.deleteByPrimaryKey(id) > 0) {
+            return ServerResponse.createBySuccessMsg("删除用户成功!");
+        }
+        return ServerResponse.createByError("删除用户失败, 服务器内部错误!");
+    }
 }

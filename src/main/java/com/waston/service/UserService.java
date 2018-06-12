@@ -89,4 +89,11 @@ public interface UserService {
      * @return
      */
     ServerResponse listUsers(int pageNum, int pageSize);
+
+    /**
+     * 删除用户
+     * @param id
+     * @return
+     */
+    ServerResponse removeUser(Integer id);
 }

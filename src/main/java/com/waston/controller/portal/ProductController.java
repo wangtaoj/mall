@@ -36,7 +36,7 @@ public class ProductController {
         ProductDetailVo productDetailVo = response.getData();
         if(productDetailVo.getStatus() != Consts.ON_SALE)
             return ServerResponse.createByError("商品已经下架");
-        return productService.getDetail(productId);
+        return response;
     }
 
     @RequestMapping(value = "/list.do", produces = "application/json;charset=utf-8")

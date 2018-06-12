@@ -49,7 +49,7 @@ public class UserManageController {
 
     @RequestMapping(value = "/get_username.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     @ResponseBody
-    public ServerResponse login(HttpSession session) {
+    public ServerResponse getUsername(HttpSession session) {
         User currentUser = (User)session.getAttribute(Consts.CURRENT_USER);
         if(currentUser == null)
             return ServerResponse.createByError(ResponseCode.NEED_LOGIN.getStatus(), "还未登录");
@@ -73,6 +73,23 @@ public class UserManageController {
             return ServerResponse.createByError("普通用户, 权限不够");
         session.removeAttribute(Consts.CURRENT_USER);
         return ServerResponse.createBySuccess();
+    }
+
+    /**
+     * 删除用户接口
+     * @param id
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = "/remove.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public ServerResponse remove(Integer id, HttpSession session) {
+        User currentUser = (User)session.getAttribute(Consts.CURRENT_USER);
+        if(currentUser == null)
+            return ServerResponse.createByError(ResponseCode.NEED_LOGIN.getStatus(), "还未登录");
+        if(currentUser.getRole() != Consts.ADMIN_ROLE)
+            return ServerResponse.createByError("普通用户, 权限不够");
+        return userService.removeUser(id);
     }
 
     /**
